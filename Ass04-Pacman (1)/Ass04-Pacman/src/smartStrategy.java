@@ -7,6 +7,7 @@ public class smartStrategy implements StrategyInterface{
 	@Override
 	public void nextMove(Character ghost, Character pacman) {
 		String options = "";
+                //test
 
 		Board board = ghost.getBoard().getBoard();
                 //board size
