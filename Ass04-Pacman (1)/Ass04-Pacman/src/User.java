@@ -1,35 +1,35 @@
 
 public class User {
-	private String username;
+	private String uName;
 	private int age;
-	private String password;
+	private String uPassword;
 	private char sex;
 	private double score;
 	private int bestTime;
 	private int bestColTime;
 	
 	public User(String uname, char sex, int age, String pass){
-		this.username = uname;
+		this.uName = uname;
 		this.age = age;
 		this.sex = sex;
-		this.password = pass;
+		this.uPassword = pass;
 		this.score = 0;
 		this.bestColTime = 0;
 		this.bestTime = 0;
 	}
 	
 	public User(String uname, char sex,int age, String pass, double score, int bestTime, int bestColTime){
-		this.username = uname;
+		this.uName = uname;
 		this.age = age;
 		this.sex = java.lang.Character.toLowerCase(sex);
-		this.password = pass;
+		this.uPassword = pass;
 		this.score = score;
 		this.bestColTime = bestTime;
 		this.bestTime = bestColTime;
 	}
 	
 	public String getUsername(){
-		return username;
+		return uName;
 	}
 	public double getScore(){
 		return score;
@@ -44,7 +44,7 @@ public class User {
 		return bestColTime;
 	}
 	public String getPassword(){
-		return password;
+		return uPassword;
 	}
 	public char getSex(){
 		return sex;
@@ -59,6 +59,6 @@ public class User {
 		this.bestColTime = bestColTime;
 	}
 	public String getString(){
-		return username + ";" + sex + ";" + age + ";" + password + ";" + score + ";" + bestTime + ";" + bestColTime;
+		return uName + ";" + sex + ";" + age + ";" + uPassword + ";" + score + ";" + bestTime + ";" + bestColTime;
 	}
 }

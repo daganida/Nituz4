@@ -3,12 +3,13 @@ public class WeakGhost extends Ghost{
 	
 	public WeakGhost(Controller controller, double startingPointX, double startingPointY, int gColor,
 			int delay) {
+            
 		super(controller, startingPointX, startingPointY, gColor, delay, new RandomStrategy());
 	}
 
 	@Override
 	protected void nextMove() {
-		this.algorithm.nextMove(this);
+		strategy.nextMove(this);
 	}
 
 	@Override

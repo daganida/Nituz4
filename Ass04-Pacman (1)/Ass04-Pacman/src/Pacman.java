@@ -27,7 +27,7 @@ public abstract class Pacman extends Character implements KeyListener{
 		this.controller = controller;
 		this.image = getCorrectIcon();
 		this.toChangeDirection = true;
-		this.algorithm = new RandomStrategy();
+		this.strategy = new RandomStrategy();
 		this.timer=new Timer(speed/5,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -90,7 +90,7 @@ public abstract class Pacman extends Character implements KeyListener{
 	}
 	public void moveRandom(){
 		if(toChangeDirection == true){
-			algorithm.nextMove(this);
+			strategy.nextMove(this);
 			toChangeDirection = false;
 		}
 		int xCoor = (int)Math.round((x+deltaX)/controller.getSquareWidth());
@@ -159,7 +159,7 @@ public abstract class Pacman extends Character implements KeyListener{
 	}
 	
 	public void destroyPacman(){
-		this.algorithm = null;
+		this.strategy = null;
 		this.timer.stop();
 		this.setVisible(false);
 		this.removeKeyListener(this);

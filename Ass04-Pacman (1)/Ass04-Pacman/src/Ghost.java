@@ -23,7 +23,7 @@ public abstract class Ghost extends Character{
 			this.x=startingPointX;
 			this.y=startingPointY;
 			this.controller = controller;
-			this.algorithm = algorithm;
+			this.strategy = algorithm;
 			this.toChangeDirection = true;
 			this.path = "Img/g" + gColor + ".png";
 			this.image = new ImageIcon(getClass().getClassLoader().getResource(path));

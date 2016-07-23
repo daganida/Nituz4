@@ -4,12 +4,12 @@ public class Board {
 	private int width;
 	private int height;
 	private Cell[][] board;
-	private GameData gameData;
+	private GameData gameManager;
 	
 	public Board(int[][] b){
-		this.gameData = new GameData(3,0);
-		this.width = b.length;
-		this.height = b[0].length;
+		gameManager = new GameData(3,0);
+		width = b.length;
+		height = b[0].length;
 		board = new Cell[width][height];
 		CellType type = null;
 		for(int i=0; i<width; i++)
@@ -24,7 +24,7 @@ public class Board {
 	}
 
 	public Board(Board copy) {
-		this.gameData = new GameData(3,0);
+		this.gameManager = new GameData(3,0);
 		this.width = copy.width;
 		this.height = copy.height;
 		this.board = new Cell[width][height];
@@ -94,30 +94,30 @@ public class Board {
 		}
 	}
 	public int getLives(){
-		return gameData.getLives();
+		return gameManager.getLives();
 	}
 	public void decLives(){
-		gameData.decLives();
+		gameManager.decLives();
 	}
 	public int getScore(){
-		return gameData.getScore();
+		return gameManager.getScore();
 	}
 	public void addScore(int i){
-		gameData.addScore(i);
+		gameManager.addScore(i);
 	}
 	public void setEndTimer(String end){
-		gameData.setEndTimer(end);
+		gameManager.setEndTimer(end);
 	}
 	public String getStartTimer(){
-		return gameData.getStartTimer();
+		return gameManager.getStartTimer();
 	}
 	public String getEndTimer(){
-		return gameData.getEndTimer();
+		return gameManager.getEndTimer();
 	}
 	public String getFirstDecTimer(){
-		return gameData.getFirstDecTimer();
+		return gameManager.getFirstDecTimer();
 	}
 	public void setFirstDecTimer(String dec){
-		gameData.setFirstDecTimer(dec);
+		gameManager.setFirstDecTimer(dec);
 	}
 }

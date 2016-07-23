@@ -17,7 +17,7 @@ public abstract class Character extends JPanel implements Visited, Visitor {
 	protected double startY;
 	protected Controller controller;
 	protected int speed;
-	protected StrategyInterface algorithm;
+	protected StrategyInterface strategy;
 	protected boolean toChangeDirection;
 	
 	@Override

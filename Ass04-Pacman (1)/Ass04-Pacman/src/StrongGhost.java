@@ -8,7 +8,7 @@ public class StrongGhost extends Ghost{
 
 	@Override
 	protected void nextMove() {
-		algorithm.nextMove(this, controller.getPacman());
+		strategy.nextMove(this, controller.getPacman());
 	}
 
 	@Override
