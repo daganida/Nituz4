@@ -1,7 +1,7 @@
 
 public class StrongGhost extends Ghost{
 
-	public StrongGhost(Controller controller, double startingPointX, double startingPointY, int gColor,
+	public StrongGhost(gameManager controller, double startingPointX, double startingPointY, int gColor,
 			int delay) {
 		super(controller, startingPointX, startingPointY, gColor, delay, new smartStrategy());
 	}

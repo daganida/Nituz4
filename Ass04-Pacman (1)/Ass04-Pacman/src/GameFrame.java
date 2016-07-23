@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 
 public class GameFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
-	private Controller gameBoard;
+	private gameManager gameBoard;
 
 	//Constructor
 	public GameFrame(){
@@ -20,7 +20,7 @@ public class GameFrame extends JFrame {
 		// Create and set up the window
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Create the content pane
-		gameBoard = new Controller(this);
+		gameBoard = new gameManager(this);
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {

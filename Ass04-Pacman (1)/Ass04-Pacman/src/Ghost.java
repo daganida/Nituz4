@@ -13,7 +13,7 @@ public abstract class Ghost extends Character{
 	private boolean isDelayed=true;
 
 	//Constructor
-		public Ghost(Controller controller, double startingPointX, double startingPointY, int gColor, int delay, StrategyInterface algorithm){
+		public Ghost(gameManager controller, double startingPointX, double startingPointY, int gColor, int delay, StrategyInterface algorithm){
 			this.deltaX=0;
 			this.deltaY=0;
 			this.gColor = gColor;

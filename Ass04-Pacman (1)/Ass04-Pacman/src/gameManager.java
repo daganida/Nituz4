@@ -36,7 +36,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
-public class Controller extends JPanel{
+public class gameManager extends JPanel{
 	private static final long serialVersionUID = 1L;
 	private Pacman pacman;
 	private JPanel background;
@@ -108,7 +108,7 @@ public class Controller extends JPanel{
 	private Board currentBoard;
 	
 	//Constructor
-	public Controller(GameFrame thisGame){
+	public gameManager(GameFrame thisGame){
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		this.initialBoard = new Board(bMat);
 		this.frameWidth=thisGame.getWidth();
@@ -147,25 +147,29 @@ public class Controller extends JPanel{
 	}
 	private void LoadUsers() {
 		try {
-			File usersFile = new File(membersPath);
-			if(usersFile.exists()){
-				BufferedReader br = new BufferedReader(new FileReader(usersFile));
-				String user = br.readLine();
-				while(user != null){
-					String[] userParts = user.split(";");
-					users.add(new User(userParts[0],userParts[1].charAt(0),Integer.parseInt(userParts[2]),userParts[3],Double.parseDouble(userParts[4]),Integer.parseInt(userParts[5]),Integer.parseInt(userParts[6])));
-					user = br.readLine();
-				}
-				br.close();
-			}
-			else{
-				usersFile.createNewFile();
-			}
+                  ReadUsersFromFile();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 	}
+
+    private void ReadUsersFromFile() throws NumberFormatException, IOException {
+        File currentUserInFile = new File(membersPath);
+        if(currentUserInFile.exists()){
+            BufferedReader bReader = new BufferedReader(new FileReader(currentUserInFile));
+            String user = bReader.readLine();
+            while(user != null){
+                String[] allPartsOfUser = user.split(";");
+                users.add(new User(allPartsOfUser[0],allPartsOfUser[1].charAt(0),Integer.parseInt(allPartsOfUser[2]),allPartsOfUser[3],Double.parseDouble(allPartsOfUser[4]),Integer.parseInt(allPartsOfUser[5]),Integer.parseInt(allPartsOfUser[6])));
+                user = bReader.readLine();
+            }
+            bReader.close();
+        }
+        else{
+            currentUserInFile.createNewFile();
+        }
+    }
 	private void setMainScreen() {
 		multiBoard.removeAll();
 		multiBoard.repaint();
@@ -398,8 +402,8 @@ public class Controller extends JPanel{
 	private boolean checkConfigDetails(JPanel parent){
 		if(playerMode!= 0 && gameMode != 0){
     		if(playerMode == 1){ //Real Player
-				String username = JOptionPane.showInputDialog(null, "Please Enter Your Username:", "Username", 1);
-				String password = JOptionPane.showInputDialog(null, "Please Enter Your Password:", "Username", 1);
+				String username = JOptionPane.showInputDialog(null, "Enter Username:", "Username", 1);
+				String password = JOptionPane.showInputDialog(null, "Enter Password:", "Username", 1);
     			if(isValidMember(username,password) == true){
     				currentUser = username;
     				return true;

@@ -14,7 +14,7 @@ public abstract class Pacman extends Character implements KeyListener{
 	private long startRoundTime;
 
 	//Constructor
-	public Pacman(Controller controller, double startingPointX, double startingPointY, int playerType, int deltaX, int deltaY){
+	public Pacman(gameManager controller, double startingPointX, double startingPointY, int playerType, int deltaX, int deltaY){
 		this.playerType = playerType;
 		this.deltaX=deltaX;
 		this.deltaY=deltaY;

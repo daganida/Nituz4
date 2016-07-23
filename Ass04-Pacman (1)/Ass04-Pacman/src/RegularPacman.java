@@ -2,7 +2,7 @@
 public class RegularPacman extends Pacman{
 	protected static final long serialVersionUID = 1L;
 
-	public RegularPacman(Controller controller, double startingPointX, double startingPointY, int playerType, int deltaX, int deltaY) {
+	public RegularPacman(gameManager controller, double startingPointX, double startingPointY, int playerType, int deltaX, int deltaY) {
 		super(controller, startingPointX, startingPointY, playerType, deltaX, deltaY);
 	}
 

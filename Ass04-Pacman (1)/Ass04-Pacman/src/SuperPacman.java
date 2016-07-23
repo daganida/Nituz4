@@ -3,7 +3,7 @@ import javax.swing.ImageIcon;
 public class SuperPacman extends Pacman{
 	protected static final long serialVersionUID = 1L;
 
-	public SuperPacman(Controller controller, double startingPointX, double startingPointY, int playerType, int deltaX, int deltaY) {
+	public SuperPacman(gameManager controller, double startingPointX, double startingPointY, int playerType, int deltaX, int deltaY) {
 		super(controller, startingPointX, startingPointY, playerType, deltaX, deltaY);
 		super.initializeTransitionTimers();
 	}

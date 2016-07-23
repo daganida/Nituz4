@@ -15,7 +15,7 @@ public abstract class Character extends JPanel implements Visited, Visitor {
 	protected ImageIcon image;
 	protected double startX;
 	protected double startY;
-	protected Controller controller;
+	protected gameManager controller;
 	protected int speed;
 	protected StrategyInterface strategy;
 	protected boolean toChangeDirection;
@@ -109,7 +109,7 @@ public abstract class Character extends JPanel implements Visited, Visitor {
 	public int getDeltaY(){
 		return deltaY;
 	}
-	public Controller getBoard(){
+	public gameManager getBoard(){
 		return controller;
 	}
 	
