@@ -40,7 +40,7 @@ public abstract class Pacman extends Character implements KeyListener{
 					if(isRegular == false){
 						if(checkTimerToChangedBack() == true){
 							isRegular=true;
-							controller.resetPacmanToRegular();
+							controller.resetPacman();
 						}
 					}
 				}

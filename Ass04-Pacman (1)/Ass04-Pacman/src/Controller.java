@@ -25,6 +25,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JRadioButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
@@ -52,8 +53,8 @@ public class Controller extends JPanel{
 	private int bottomPanelHeight = 25;
 	private double squareHeight;
 	private double squareWidth;
-	private ArrayList<User> usersArray;
-	private ArrayList<Integer> statsArray;
+	private ArrayList<User> users;
+	private ArrayList<Integer> statistics;
 	private int initPacX;
 	private int initPacY;	
 	private boolean movedBefore = false;
@@ -115,8 +116,8 @@ public class Controller extends JPanel{
 		this.membersPath = new File("").getAbsolutePath() + "\\pacmanMembers.txt";
 		this.statisticsPath = new File("").getAbsolutePath() + "\\pacmanStatistics.txt";
 		this.currentUser = "";
-		this.usersArray = new ArrayList<>();
-		this.statsArray = new ArrayList<>();
+		this.users = new ArrayList<>();
+		this.statistics = new ArrayList<>();
 		mapHeight=496;
 		mapWidth=448;
 		squareHeight=mapHeight/31;
@@ -152,7 +153,7 @@ public class Controller extends JPanel{
 				String user = br.readLine();
 				while(user != null){
 					String[] userParts = user.split(";");
-					usersArray.add(new User(userParts[0],userParts[1].charAt(0),Integer.parseInt(userParts[2]),userParts[3],Double.parseDouble(userParts[4]),Integer.parseInt(userParts[5]),Integer.parseInt(userParts[6])));
+					users.add(new User(userParts[0],userParts[1].charAt(0),Integer.parseInt(userParts[2]),userParts[3],Double.parseDouble(userParts[4]),Integer.parseInt(userParts[5]),Integer.parseInt(userParts[6])));
 					user = br.readLine();
 				}
 				br.close();
@@ -182,30 +183,32 @@ public class Controller extends JPanel{
 	}
 	/////////////////////////////////JPanels/////////////////////////////////
 	private JPanel createSignUpPanel(){
+            
+        
 		int labelWidth = 100;
 		int labelHeight = 20;
 		int textBoxWidth = labelWidth + labelWidth/2;
 		JPanel signUpPanel = new JPanel();
 		signUpPanel.setLayout(null);
-		signUpPanel.setBackground(bgColor);
+		signUpPanel.setBackground(Color.BLACK);
 		
-		JLabel titleLabel = new JLabel("Sign Up for FREE!");
-		titleLabel.setForeground(Color.YELLOW);
+		JLabel titleLabel = new JLabel("Sign Up!");
+		titleLabel.setForeground(Color.WHITE);
 		titleLabel.setFont(new Font("Arial", Font.BOLD,20));
-		titleLabel.setBounds(frameWidth / 2 - 90, frameHeight / 8, 200, 40);
+		titleLabel.setBounds(frameWidth / 2 -30, frameHeight / 8 + 100, 230, 40);
 		
 		JLabel nameLabel = new JLabel("Name:");
 		nameLabel.setForeground(Color.WHITE);
-		nameLabel.setBounds(frameWidth / 4, frameHeight / 4 +20, labelWidth, labelHeight);
+		nameLabel.setBounds(frameWidth / 4, frameHeight / 4 +135, labelWidth, labelHeight);
 		
-		JLabel sexLabel = new JLabel("Sex: M / F");
+		JLabel sexLabel = new JLabel("Sex: M/F");
 		sexLabel.setForeground(Color.WHITE);
-		sexLabel.setBounds(frameWidth / 4, frameHeight / 4 + 80, labelWidth, labelHeight);
+		sexLabel.setBounds(frameWidth / 4, frameHeight / 4 + 160, labelWidth, labelHeight);
 
 
 		JLabel ageLabel = new JLabel("Age:");
 		ageLabel.setForeground(Color.WHITE);
-		ageLabel.setBounds(frameWidth / 4, frameHeight / 4 + 140, labelWidth, labelHeight);
+		ageLabel.setBounds(frameWidth / 4, frameHeight / 4 + 180, labelWidth, labelHeight);
 
 
 		JLabel passLabel = new JLabel("Password:");
@@ -213,14 +216,14 @@ public class Controller extends JPanel{
 		passLabel.setBounds(frameWidth / 4, frameHeight / 4 + 200, labelWidth, labelHeight);
 
 		JTextField nameTF = new JTextField();
-		nameTF.setBounds(frameWidth / 4 + labelWidth/2 + 30, frameHeight / 4 +20, textBoxWidth, labelHeight);
+		nameTF.setBounds(frameWidth / 4 + labelWidth/2 + 30, frameHeight / 4 +140, textBoxWidth, labelHeight);
 
 		JTextField sexTF = new JTextField();
-		sexTF.setBounds(frameWidth / 4 + labelWidth/2 +30, frameHeight / 4 + 80, textBoxWidth / 7, labelHeight);
+		sexTF.setBounds(frameWidth / 4 + labelWidth/2 +30, frameHeight / 4 + 160, textBoxWidth / 7, labelHeight);
 		
 
 		JTextField ageTF = new JTextField();
-		ageTF.setBounds(frameWidth / 4 + labelWidth/2 + 30, frameHeight / 4 + 140, textBoxWidth, labelHeight);
+		ageTF.setBounds(frameWidth / 4 + labelWidth/2 + 30, frameHeight / 4 + 180, textBoxWidth, labelHeight);
 		
 
 		JPasswordField passTF = new JPasswordField();
@@ -228,7 +231,7 @@ public class Controller extends JPanel{
 		
 		
 		JButton signUpBtn = new JButton("Sign Up");
-		signUpBtn.setBounds(frameWidth /4, frameHeight/4 + 300, labelWidth, labelHeight);
+		signUpBtn.setBounds(frameWidth /4, frameHeight/4 + 240, labelWidth, labelHeight);
 		signUpBtn.addActionListener( new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
@@ -244,7 +247,7 @@ public class Controller extends JPanel{
 		});
 		
 		JButton backBtn = new JButton("Back");
-		backBtn.setBounds(frameWidth /4 + labelWidth + 30, frameHeight/4 + 300, labelWidth, labelHeight);
+		backBtn.setBounds(frameWidth /4 + labelWidth + 15, frameHeight/4 + 240, labelWidth, labelHeight);
 		backBtn.addActionListener( new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
@@ -275,25 +278,25 @@ public class Controller extends JPanel{
 		
 		JPanel newGamePanel = new JPanel();
 		newGamePanel.setLayout(null);
-		newGamePanel.setBackground(bgColor);
+		newGamePanel.setBackground(Color.black);
 		
-		JLabel titleLabel = new JLabel("Settings");
-		titleLabel.setForeground(Color.YELLOW);
-		titleLabel.setFont(new Font("Arial", Font.BOLD,20));
+		JLabel titleLabel = new JLabel("Configurations");
+		titleLabel.setForeground(Color.WHITE);
+		titleLabel.setFont(new Font("Arial", Font.BOLD,15));
 		titleLabel.setBounds(frameWidth / 2 - 40, frameHeight / 8, 200, 40);
 		
-		JButton realPlayerBtn = new JButton("Real Player");
-		realPlayerBtn.setBounds(frameWidth /4 , frameHeight/2 - 100, labelWidth +10, 3*labelHeight);
+		JButton realPlayerBtn = new JButton("Single Player");
+		realPlayerBtn.setBounds(frameWidth /4 , frameHeight/2 - 100, labelWidth +10, labelHeight);
 		
-		JButton demoPlayerBtn = new JButton("Demo Player");
-		demoPlayerBtn.setBounds(frameWidth /4 + labelWidth + 20, frameHeight/2 - 100, labelWidth +10, 3*labelHeight);
+		JButton demoPlayerBtn = new JButton("Computer");
+		demoPlayerBtn.setBounds(frameWidth /4 + labelWidth + 20, frameHeight/2 - 100, labelWidth +10, labelHeight);
 		
 		realPlayerBtn.addActionListener( new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
 		    {
-		    	realPlayerBtn.setBorder(new LineBorder(Color.WHITE,3));
-		    	demoPlayerBtn.setBorder(UIManager.getBorder("Button.border"));
+		    	demoPlayerBtn.setBorder(new LineBorder(Color.red,2));
+		    	realPlayerBtn.setBorder(UIManager.getBorder("Button.border"));
 		    	playerMode = 1;
 		    }
 		});
@@ -302,24 +305,28 @@ public class Controller extends JPanel{
 		{
 		    public void actionPerformed(ActionEvent e)
 		    {
-		    	demoPlayerBtn.setBorder(new LineBorder(Color.WHITE,3));
-		    	realPlayerBtn.setBorder(UIManager.getBorder("Button.border"));
+		    	realPlayerBtn.setBorder(new LineBorder(Color.red,3));
+		    	demoPlayerBtn.setBorder(UIManager.getBorder("Button.border"));
 		    	playerMode=2;
 		    }
 		});
+		// Easy - Hard
+           
+		JButton easyBtn = new JButton("Easy");
+                easyBtn.setContentAreaFilled(true);
+		easyBtn.setBounds(frameWidth /4 , frameHeight/2 - 60, labelWidth +10, labelHeight);
 		
-		JButton easyBtn = new JButton("Easy Mode");
-		easyBtn.setBounds(frameWidth /4 , frameHeight/2 -20, labelWidth +10, labelHeight);
-		
-		JButton hardBtn = new JButton("Hard Mode");
-		hardBtn.setBounds(frameWidth /4 + labelWidth + 20, frameHeight/2 -20 , labelWidth +10, labelHeight);
+		JButton hardBtn = new JButton("Hard");
+		hardBtn.setBounds(frameWidth /4 + labelWidth + 20, frameHeight/2 - 60 , labelWidth +10, labelHeight);
+                hardBtn.setContentAreaFilled(true);
+
 		
 		easyBtn.addActionListener( new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
 		    {
-		    	easyBtn.setBorder(new LineBorder(Color.WHITE,3));
-		    	hardBtn.setBorder(UIManager.getBorder("Button.border"));
+		    	hardBtn.setBorder(new LineBorder(Color.red,3));
+		    	easyBtn.setBorder(UIManager.getBorder("Button.border"));
 		    	gameMode=1;
 		    }
 		});
@@ -328,16 +335,19 @@ public class Controller extends JPanel{
 		{
 		    public void actionPerformed(ActionEvent e)
 		    {
-		    	hardBtn.setBorder(new LineBorder(Color.WHITE,3));
-		    	easyBtn.setBorder(UIManager.getBorder("Button.border"));
+		    	easyBtn.setBorder(new LineBorder(Color.red,3));
+		    	hardBtn.setBorder(UIManager.getBorder("Button.border"));
 		    	gameMode=2;
 		    }
 		});
 		
-		JLabel timerLabel = new JLabel("Choose Ghost Delay:");
+		JLabel timerLabel = new JLabel("Ghost Delay(0-10):");
 		timerLabel.setForeground(Color.WHITE);
-		timerLabel.setBounds(frameWidth /4, frameHeight/4 + 180, labelWidth*2 + 30, labelHeight);
-		
+		timerLabel.setBounds(frameWidth /4, frameHeight/2 - 20, labelWidth*2 + 30, labelHeight);
+                JTextField timer = new JTextField();
+		timer.setBounds(frameWidth / 4 + labelWidth + 70,frameHeight/2 - 20, 50, labelHeight);
+
+		/*
 		JSlider ghostTimerSlider = new JSlider(JSlider.CENTER, 0, 10, 5);
 		ghostTimerSlider.setForeground(Color.WHITE);
 		ghostTimerSlider.setPaintLabels(true);
@@ -346,22 +356,22 @@ public class Controller extends JPanel{
 		ghostTimerSlider.setMinorTickSpacing(1);
 		ghostTimerSlider.setBounds(frameWidth /4, frameHeight/4 + 200, labelWidth*2 + 30, labelHeight * 3);
 		ghostTimerSlider.setOpaque(false);
-
+                   */
 		
 		JButton startBtn = new JButton("Start");
-		startBtn.setBounds(frameWidth /4, frameHeight/4 + 300, labelWidth, labelHeight);
+		startBtn.setBounds(frameWidth /4, frameHeight/2+40 , labelWidth, labelHeight);
 		startBtn.addActionListener( new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
 		    {
 		    	if(checkConfigDetails(newGamePanel) == true){
-    				setGameScreen(playerMode, gameMode, ghostTimerSlider.getValue());
+    				setGameScreen(playerMode, gameMode, Integer.parseInt(timer.getText()));
 		    	}
 		    }
 		});
 		
 		JButton backBtn = new JButton("Back");
-		backBtn.setBounds(frameWidth /4 + labelWidth + 30, frameHeight/4 + 300, labelWidth, labelHeight);
+		backBtn.setBounds(frameWidth /4 + 110, frameHeight/2+40, labelWidth, labelHeight);
 		backBtn.addActionListener( new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
@@ -371,12 +381,15 @@ public class Controller extends JPanel{
 		});
 		
 		newGamePanel.add(titleLabel);
+                newGamePanel.add(timer);
 		newGamePanel.add(realPlayerBtn);
 		newGamePanel.add(demoPlayerBtn);
 		newGamePanel.add(easyBtn);
 		newGamePanel.add(hardBtn);
 		newGamePanel.add(timerLabel);
+                /*
 		newGamePanel.add(ghostTimerSlider);
+*/
 		newGamePanel.add(startBtn);
 		newGamePanel.add(backBtn);
 		
@@ -397,7 +410,7 @@ public class Controller extends JPanel{
     		else{ //Demo Player
     			currentUser = "@demo";
     			addNewMember(currentUser,"d","0","0");
-    			statsArray.set(2, statsArray.get(2)+1);
+    			statistics.set(2, statistics.get(2)+1);
     			return true;
     		}
     	}
@@ -411,36 +424,36 @@ public class Controller extends JPanel{
 		int[] ageCounter = new int[7];
 		JPanel highScoresPanel = new JPanel();
 		highScoresPanel.setLayout(null);
-		highScoresPanel.setBackground(bgColor);
+		highScoresPanel.setBackground(Color.BLACK);
 		
 		JLabel titleLabel = new JLabel("High Scores");
-		titleLabel.setForeground(Color.YELLOW);
+		titleLabel.setForeground(Color.WHITE);
 		titleLabel.setFont(new Font("Arial", Font.BOLD,20));
 		titleLabel.setBounds(frameWidth / 2 - 65, frameHeight / 8 - 50, 200, 40);
 		
 		highScoresPanel.add(titleLabel);
 		
 		JLabel nameLabel = new JLabel("Username");
-		nameLabel.setForeground(Color.ORANGE);
+		nameLabel.setForeground(Color.blue);
 		nameLabel.setBounds(frameWidth / 10 - 20, frameHeight / 8 , 100, 20);
 		highScoresPanel.add(nameLabel);
 		
 		JLabel scoreLabel = new JLabel("Score");
-		scoreLabel.setForeground(Color.ORANGE);
+		scoreLabel.setForeground(Color.blue);
 		scoreLabel.setBounds((frameWidth / 10) + 80 , frameHeight / 8 , 80, 20);
 		highScoresPanel.add(scoreLabel);
 		
-		JLabel bestTimeLabel = new JLabel("Best Time (s)");
-		bestTimeLabel.setForeground(Color.ORANGE);
+		JLabel bestTimeLabel = new JLabel("Best Time");
+		bestTimeLabel.setForeground(Color.blue);
 		bestTimeLabel.setBounds((frameWidth / 10) + 160, frameHeight / 8 , 100, 20);
 		highScoresPanel.add(bestTimeLabel);
 		
-		JLabel bestTimeUntilCol = new JLabel("Collision Best Time (s)");
-		bestTimeUntilCol.setForeground(Color.ORANGE);
+		JLabel bestTimeUntilCol = new JLabel("Collision Best Time");
+		bestTimeUntilCol.setForeground(Color.blue);
 		bestTimeUntilCol.setBounds((frameWidth / 10) + 260, frameHeight / 8 , 150, 20);
 		highScoresPanel.add(bestTimeUntilCol);
 		
-		for(int i=0; i < usersArray.size(); i++){
+		for(int i=0; i < users.size(); i++){
 			JLabel currName = new JLabel();
 			currName.setForeground(Color.WHITE);
 			JLabel currScore = new JLabel();
@@ -450,17 +463,17 @@ public class Controller extends JPanel{
 			JLabel currBestCollTime = new JLabel();
 			currBestCollTime.setForeground(Color.WHITE);
 			
-			currName.setText(usersArray.get(i).getUsername());
-			if(!currName.getText().equals("@demo") && usersArray.get(i).getScore() != 0){
-				int counterPlace = (int)((usersArray.get(i).getAge()-1)/10);
+			currName.setText(users.get(i).getUsername());
+			if(!currName.getText().equals("@demo") && users.get(i).getScore() != 0){
+				int counterPlace = (int)((users.get(i).getAge()-1)/10);
 				if(counterPlace > 6)
 					ageCounter[6]++;
 				else
 					ageCounter[counterPlace]++;
 			}
-			currScore.setText(usersArray.get(i).getScore() + "");
-			currBestTime.setText(usersArray.get(i).getBestTime()+"");
-			currBestCollTime.setText(usersArray.get(i).getBestColTime()+"");
+			currScore.setText(users.get(i).getScore() + "");
+			currBestTime.setText(users.get(i).getBestTime()+"");
+			currBestCollTime.setText(users.get(i).getBestColTime()+"");
 			currName.setBounds(frameWidth / 10 - 20, frameHeight / 8 + 50 * (i+1), 100, 20);
 			currScore.setBounds((frameWidth / 10) + 80 , frameHeight / 8 + 50 * (i+1), 80, 20);
 			currBestTime.setBounds((frameWidth / 10) + 160, frameHeight / 8 + 50 * (i+1), 100, 20);
@@ -472,15 +485,15 @@ public class Controller extends JPanel{
 		}
 		JButton statBtn = new JButton("Game Statistics");
 		statBtn.setBounds(frameWidth /2 - 70, frameHeight - 120, 140, 20);
-		statBtn.addActionListener( new ActionListener()
+		statBtn.addActionListener(new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
 		    {
-		    	double totalGames = statsArray.get(0) + statsArray.get(1) + statsArray.get(2);
+		    	double totalGames = statistics.get(0) + statistics.get(1) + statistics.get(2);
 		        String genderStats = "Gender:: Men: 0% Women: 0% Computers: 0%";
 		        String ageStats = "Ages:: 0-10: " + ageCounter[0] + " 11-20: "+ ageCounter[1] +" 21-30: "+ ageCounter[2] +" 31-40: "+ ageCounter[3] +" 41-50: "+ ageCounter[4] +" 51-60: "+ ageCounter[5] +" 60+: "+ ageCounter[6];
 		        if(totalGames != 0)
-		        	genderStats = "Gender:: Men: " + Math.round((double)(statsArray.get(0)/totalGames)*100) + "% Women: " + Math.round((double)(statsArray.get(1)/totalGames)*100) + "% Computers: " + Math.round((double)(statsArray.get(2)/totalGames)*100) + "%";
+		        	genderStats = "Gender:: Men: " + Math.round((double)(statistics.get(0)/totalGames)*100) + "% Women: " + Math.round((double)(statistics.get(1)/totalGames)*100) + "% Computers: " + Math.round((double)(statistics.get(2)/totalGames)*100) + "%";
 		        JOptionPane.showMessageDialog(highScoresPanel, genderStats + "\n" + ageStats, "Statistics Window", 3);
 		    }
 		});
@@ -521,7 +534,7 @@ public class Controller extends JPanel{
 		});
 		
 		JButton signUpBtn = new JButton("Sign Up");
-		signUpBtn.setBounds(frameWidth/2 - btnWidth/2, frameHeight/2 - btnHeight + 2*btnHeight, btnWidth, btnHeight);
+		signUpBtn.setBounds(frameWidth/2 - btnWidth/2, frameHeight/2 - btnHeight + 1*btnHeight, btnWidth, btnHeight);
 		signUpBtn.addActionListener( new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
@@ -535,7 +548,7 @@ public class Controller extends JPanel{
 		});
 		
 		JButton scoresBtn = new JButton("High Scores");
-		scoresBtn.setBounds(frameWidth/2 - btnWidth/2, frameHeight/2 - btnHeight + 4*btnHeight, btnWidth, btnHeight);
+		scoresBtn.setBounds(frameWidth/2 - btnWidth/2, frameHeight/2 - btnHeight + 2*btnHeight, btnWidth, btnHeight);
 		scoresBtn.addActionListener( new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
@@ -549,7 +562,7 @@ public class Controller extends JPanel{
 		});
 		
 		JButton exitBtn = new JButton("Exit");
-		exitBtn.setBounds(frameWidth/2 - btnWidth/2, frameHeight/2 - btnHeight + 6*btnHeight, btnWidth, btnHeight);
+		exitBtn.setBounds(frameWidth/2 - btnWidth/2, frameHeight/2 - btnHeight + 3*btnHeight, btnWidth, btnHeight);
 		exitBtn.addActionListener( new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
@@ -666,8 +679,8 @@ public class Controller extends JPanel{
 		if(password == "")
 			return false;
 		
-		for(int i=0; i<usersArray.size(); i++){
-			if(usersArray.get(0).getUsername().equals(name)){
+		for(int i=0; i<users.size(); i++){
+			if(users.get(0).getUsername().equals(name)){
 				if(!name.equals("@demo")){
 					JOptionPane.showMessageDialog(null, "Username is already Exist", "Error Window",0);
 					return false;
@@ -677,7 +690,7 @@ public class Controller extends JPanel{
 				}
 			}
 		}
-		usersArray.add(new User(name, sex.charAt(0), Integer.parseInt(age), password));
+		users.add(new User(name, sex.charAt(0), Integer.parseInt(age), password));
 		return true;
 	}
 	private void LoadStatistics(){
@@ -688,7 +701,7 @@ public class Controller extends JPanel{
 				String[] stats = br.readLine().split(";");
 				br.close();
 				for(int i=0;i<stats.length;i++)
-					statsArray.add(Integer.parseInt(stats[i]));
+					statistics.add(Integer.parseInt(stats[i]));
 			}
 			else{
 				statisticsFile.createNewFile();
@@ -696,7 +709,7 @@ public class Controller extends JPanel{
 				fw.write("0;0;0"); //Men - Women - Comp
 				fw.close();
 				for(int i=0;i<3;i++)
-					statsArray.add(i, new Integer(0));
+					statistics.add(i, new Integer(0));
 			}
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
@@ -710,7 +723,7 @@ public class Controller extends JPanel{
 		try {
 			FileWriter fw = new FileWriter(new File(statisticsPath),false);
 			String newStats = "";
-			for (int d : statsArray)
+			for (int d : statistics)
 			{
 				newStats += d + ";";
 			}
@@ -723,8 +736,8 @@ public class Controller extends JPanel{
 		
 		try {
 			FileWriter fw = new FileWriter(new File(membersPath),false); //New Content
-			for(int i=0; i< usersArray.size(); i++){
-				fw.write(usersArray.get(i).getString() + "\n");
+			for(int i=0; i< users.size(); i++){
+				fw.write(users.get(i).getString() + "\n");
 			}
 			fw.close();
 		} catch (IOException e) {
@@ -733,9 +746,9 @@ public class Controller extends JPanel{
 		
 	}
 	private User getUser(String name) {
-		for(int i=0; i < usersArray.size(); i++){
-			if(usersArray.get(i).getUsername().equals(name))
-				return usersArray.get(i);
+		for(int i=0; i < users.size(); i++){
+			if(users.get(i).getUsername().equals(name))
+				return users.get(i);
 		}
 		return null;
 	}
@@ -755,9 +768,9 @@ public class Controller extends JPanel{
 		else{
 			if(password.equals(userRecord.getPassword())){
 				if(userRecord.getSex() == 'm')
-	    			statsArray.set(0, statsArray.get(0)+1);
+	    			statistics.set(0, statistics.get(0)+1);
 				else if(userRecord.getSex() == 'f')
-	    			statsArray.set(1, statsArray.get(1)+1);
+	    			statistics.set(1, statistics.get(1)+1);
 				return true;
 			}
 		}
@@ -976,7 +989,7 @@ public class Controller extends JPanel{
 			userRecord.setBestColTime(Integer.parseInt(currFirstDecTime));
 	}
 	private void sortScores() {
-		Collections.sort(usersArray, new PacmanComparator());
+		Collections.sort(users, new PacmanComparator());
 	}
 	private void WinGame() {
 		multiBoard.removeAll();
@@ -1010,7 +1023,7 @@ public class Controller extends JPanel{
 		multiBoard.repaint();
 	}
 	private void Reorganize() {
-		resetPacmanToRegular();
+		resetPacman();
 		pacman.replace();
 		pacman.zeroDeltaXY();
 		pacman.setDirectionToTrue();
@@ -1099,7 +1112,7 @@ public class Controller extends JPanel{
 	public Pacman getPacman(){
 		return pacman;
 	}
-	public void resetPacmanToRegular(){
+	public void resetPacman(){
 		pacman.destroyPacman();
 		pacman = new RegularPacman(this, pacman.getXIndex(), pacman.getYIndex(), pacman.getPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
 		initPacmanProperties();
