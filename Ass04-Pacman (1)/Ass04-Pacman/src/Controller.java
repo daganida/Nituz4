@@ -569,7 +569,7 @@ public class Controller extends JPanel{
 		try {
 			mainBackground = new JPanel(){
 				private static final long serialVersionUID = 1L;
-				private Image img = ImageIO.read(getClass().getClassLoader().getResource("Img/welcomeScreen.jpg"));
+				private Image img = ImageIO.read(getClass().getClassLoader().getResource("Img/newWelcomeScreen.jpg"));
 				public void paint( Graphics g ) { 
 					super.paint(g);
 					g.drawImage(img,0,0,frameWidth , frameHeight, null);
@@ -585,7 +585,7 @@ public class Controller extends JPanel{
 		try {
 			background = new JPanel(){
 				private static final long serialVersionUID = 1L;
-				private Image wallImg = ImageIO.read(getClass().getClassLoader().getResource("Img/wallImage.jpg"));
+				private Image wallImg = ImageIO.read(getClass().getClassLoader().getResource("Img/myWall.jpg"));
 				private Image emptyImg = ImageIO.read(getClass().getClassLoader().getResource("Img/emptyImage.jpg"));
 				public void paint( Graphics g ) { 
 					super.paint(g);
@@ -984,7 +984,7 @@ public class Controller extends JPanel{
 		try {
 			winGamePanel = new JPanel(){
 				private static final long serialVersionUID = 1L;
-				private Image bg = ImageIO.read(getClass().getClassLoader().getResource("Img/winGame.jpg"));
+				private Image bg = ImageIO.read(getClass().getClassLoader().getResource("Img/win-image.jpg"));
 				public void paint (Graphics g){
 					super.paint(g);
 					g.drawImage(bg,0,0,frameWidth, frameHeight, null);
@@ -1036,7 +1036,7 @@ public class Controller extends JPanel{
 		try {
 				gameOverPanel = new JPanel(){
 				private static final long serialVersionUID = 1L;
-				private Image bg = ImageIO.read(getClass().getClassLoader().getResource("Img/gameOver.jpg"));
+				private Image bg = ImageIO.read(getClass().getClassLoader().getResource("Img/game-over.jpg"));
 				public void paint (Graphics g){
 					super.paint(g);
 					g.drawImage(bg,0,0,frameWidth, frameHeight, null);
