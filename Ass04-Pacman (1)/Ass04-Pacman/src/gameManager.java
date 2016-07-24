@@ -905,20 +905,21 @@ public class gameManager extends JPanel{
 	public void addItemToMultiBoard(Component comp , Integer num){
 		multiBoard.add(comp,num);
 	}
-	public boolean canMove(double currX, double currY) {
-		int xCoor = (int)Math.round((currX + pacman.getDeltaX())/squareWidth);
-		int yCoor = (int)Math.round((currY + pacman.getDeltaY())/squareHeight);		
-
-		if(collision((int)Math.round((currX)/squareWidth),(int)Math.round((currY)/squareHeight)) == true){ //Collision			
-			if(currentBoard.getCuurentLives() == 3){ //First Dec
+	public boolean canMove(double currXPosition, double currYPosition) {
+		int xCordination = (int)Math.round((currXPosition + pacman.getDeltaX())/squareWidth);
+		int yCordination = (int)Math.round((currYPosition + pacman.getDeltaY())/squareHeight);
+                int xCordForCollision = (int)Math.round((currXPosition)/squareWidth);
+                int yCordForCollision = (int)Math.round((currYPosition)/squareHeight);
+		if(collisionHappendWithGhost(xCordForCollision,yCordForCollision) == true){ 			
+			if(currentBoard.getCuurentLives() == 3){ //first time life decreasings
 				currentBoard.setFirstDecrementTimer(new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
 			}
 			currentBoard.decrementLives();
 			stopMovement();
 			if(currentBoard.getCuurentLives()>0) //Keep Playing
-				Reorganize();
+				backToStartPlace();
 			else{
-				GameOver();
+				playerLose();
 				currentBoard.setFinalTimer(new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
 				if(currentUser != "")
 					try {
@@ -929,77 +930,93 @@ public class gameManager extends JPanel{
 					}
 			}
 		}
-		if(currentBoard.getCellType(yCoor,xCoor).getCellType() == 1){
+                //there is a wall
+                
+		if(currentBoard.getCellType(yCordination,xCordination).getCellType() == 1){
 			return false;
 		}
-		if(xCoor != initPacX || yCoor != initPacY)
+		if(xCordination != initPacX || yCordination != initPacY)
 			movedBefore = true;
-		if(currentBoard.getCellType(yCoor,xCoor) instanceof FoodCell && movedBefore){
-			currentBoard.setCellType(yCoor,xCoor,E);
-			if(yCoor==1 && xCoor==1 || yCoor==29 && xCoor==1){ //Mighty
-				currentBoard.addToCuurentScore(15);
-				pacman.deletePacmanFromMap();
-				pacman = new MightyPacman(this, pacman.getXIndexPosition(), pacman.getYIndexPosition(), pacman.getCurrentPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
-				initPacmanProperties();
-			}
-			else if(yCoor==1 && xCoor==26 || yCoor==29 && xCoor==26){ //Super
-				currentBoard.addToCuurentScore(15);
-				pacman.deletePacmanFromMap();
-				pacman = new SuperPacman(this, pacman.getXIndexPosition(), pacman.getYIndexPosition(), pacman.getCurrentPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
-				initPacmanProperties();
-			}
-			else
-				currentBoard.addToCuurentScore(3);
-
-			JLabel score = (JLabel)gameDataPanel.getComponent(4);
+                
+                
+                
+		if(currentBoard.getCellType(yCordination,xCordination) instanceof FoodCell && movedBefore){
+			currentBoard.setCellType(yCordination,xCordination,E);
+                        didEatSpecialFood(yCordination, xCordination);
+			JLabel currentScore = (JLabel)gameDataPanel.getComponent(4);
 			
-			score.setText(Integer.toString(currentBoard.getCurrentScore()));
+			currentScore.setText(Integer.toString(currentBoard.getCurrentScore()));
 			itemsBoard.repaint();
 		}
-		if(currentBoard.getFoodCurrentNumber() == 0){ //Win
-			currentBoard.addToCuurentScore(20 * currentBoard.getCuurentLives());
-			stopMovement();
-			WinGame();
-			currentBoard.setFinalTimer(new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
-			if(currentUser != "")
-				try {
-					UpdateUserStatistics();
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		}
+                 checkIfWin();
 		
-		if(xCoor == currentBoard.getHeight() - 1 && pacman.getDeltaX() == 1)
+		if(xCordination == currentBoard.getHeight() - 1 && pacman.getDeltaX() == 1)
 			pacman.setXIndexPosition(0);
-		if(xCoor == 0 && pacman.getDeltaX() == -1)
+		if(xCordination == 0 && pacman.getDeltaX() == -1)
 			pacman.setXIndexPosition(squareWidth * (currentBoard.getHeight() - 1));
 		return true;
 	}
+
+    private void checkIfWin() {
+        if(currentBoard.getFoodCurrentNumber() == 0){ //Win
+            currentBoard.addToCuurentScore(20 * currentBoard.getCuurentLives());
+            stopMovement();
+            WinGame();
+            currentBoard.setFinalTimer(new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
+            if(currentUser != "")
+                try {
+                    UpdateUserStatistics();
+                } catch (ParseException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+    }
+
+    private void didEatSpecialFood(int yCordination, int xCordination) {
+        if(yCordination==1 && xCordination==26 || yCordination==29 && xCordination==26){ //Super
+            currentBoard.addToCuurentScore(15);
+            pacman.deletePacmanFromMap();
+            pacman = new SuperPacman(this, pacman.getXIndexPosition(), pacman.getYIndexPosition(), pacman.getCurrentPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
+            initPacmanProperties();
+        }
+        
+        else if(yCordination==1 && xCordination==1 || yCordination==29 && xCordination==1){ //Mighty
+            currentBoard.addToCuurentScore(15);
+            pacman.deletePacmanFromMap();
+            pacman = new MightyPacman(this, pacman.getXIndexPosition(), pacman.getYIndexPosition(), pacman.getCurrentPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
+            initPacmanProperties();
+        }
+        
+        else
+            currentBoard.addToCuurentScore(3);
+    }
 	private void UpdateUserStatistics() throws ParseException {
-		User userRecord = getCurrentUser(currentUser);		
-		String currScore = Integer.toString(currentBoard.getCurrentScore());
-		DateFormat df = new java.text.SimpleDateFormat("hh:mm:ss");
-		Date date1 = df.parse(currentBoard.getStartTimer());
-		Date date2 = df.parse(currentBoard.getFinalTimer());
-		long diff = date2.getTime() - date1.getTime();			
-		String currBestTime =  Long.toString(diff / 1000); //In Seconds
-		String tempDecTime = currentBoard.getFirstDecrementTimer();
+		User currentUserPlaying = getCurrentUser(currentUser);		
+		String userCurrScore = Integer.toString(currentBoard.getCurrentScore());
+		DateFormat statisticsDataFormat = new java.text.SimpleDateFormat("hh:mm:ss");
+		Date firstDate = statisticsDataFormat.parse(currentBoard.getStartTimer());
+		Date secondDate = statisticsDataFormat.parse(currentBoard.getFinalTimer());
+		long differenceBetweenDates = secondDate.getTime() - firstDate.getTime();			
+		String bestTimeUntilNow =  Long.toString(differenceBetweenDates / 1000); 
+		String tempDecrementTime = currentBoard.getFirstDecrementTimer();
 		String currFirstDecTime;
-		if(tempDecTime == ""){
-			currFirstDecTime = currBestTime;
+		if(tempDecrementTime != ""){
+                    
+			Date thirdDate = statisticsDataFormat.parse(tempDecrementTime);
+			long secondDifferenceBetweenDates = thirdDate.getTime() - firstDate.getTime();
+			currFirstDecTime =  Long.toString(secondDifferenceBetweenDates / 1000);
 		}
 		else{
-			Date date3 = df.parse(tempDecTime);
-			long diff2 = date3.getTime() - date1.getTime();
-			currFirstDecTime =  Long.toString(diff2 / 1000);
+                        currFirstDecTime = bestTimeUntilNow;
+
 		}
-		if(userRecord.getUserScore() < Double.parseDouble(currScore))
-			userRecord.setUserScore(Double.parseDouble(currScore));
-		if(userRecord.getUserBestTime() < Integer.parseInt(currBestTime))
-			userRecord.setUserBestTime(Integer.parseInt(currBestTime));
-		if(userRecord.getUserBestCollisionTime() < Integer.parseInt(currFirstDecTime))
-			userRecord.setBestUserCollisionTime(Integer.parseInt(currFirstDecTime));
+		if(currentUserPlaying.getUserScore() < Double.parseDouble(userCurrScore))
+			currentUserPlaying.setUserScore(Double.parseDouble(userCurrScore));
+		if(currentUserPlaying.getUserBestTime() < Integer.parseInt(bestTimeUntilNow))
+			currentUserPlaying.setUserBestTime(Integer.parseInt(bestTimeUntilNow));
+		if(currentUserPlaying.getUserBestCollisionTime() < Integer.parseInt(currFirstDecTime))
+			currentUserPlaying.setBestUserCollisionTime(Integer.parseInt(currFirstDecTime));
 	}
 	private void sortAllScores() {
 		Collections.sort(users, new PacmanComparator());
@@ -1019,44 +1036,47 @@ public class gameManager extends JPanel{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+                
+               
 		winGamePanel.setLayout(null);
-		winGamePanel.setSize(frameWidth, frameHeight);
-		JButton backBtn = new JButton("Back");
-		backBtn.setBounds(frameWidth /2 - 40, frameHeight - 80, 80, 20);
-		backBtn.addActionListener(new ActionListener()
+		winGamePanel.setSize(currentWidth, currentHeight);
+		JButton returnButton = new JButton("Back");
+                setBtnProperties(returnButton,frameWidth /2 - 40, frameHeight - 80, 80, 20);
+		returnButton.addActionListener(new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
 		    {
 		        setBoardMainScreen();
 		    }
 		});
-		multiBoard.add(winGamePanel,new Integer(0));
-		multiBoard.add(backBtn, new Integer(1));
-		winGamePanel.setFocusable(true);
+                winGamePanel.setFocusable(true);
 		multiBoard.repaint();
+		multiBoard.add(winGamePanel,new Integer(0));
+		multiBoard.add(returnButton, new Integer(1));
+		
 	}
-	private void Reorganize() {
+	private void backToStartPlace() {
 		resetPacman();
 		pacman.replace();
 		pacman.resetDeltaXAndY();
 		pacman.setDirectionToTrue();
-		for(int i=0;i<ghosts.length;i++){
-			ghosts[i].replace();
+		for(int ghostIndex=0;ghostIndex<ghosts.length;ghostIndex++){
+			ghosts[ghostIndex].replace();
 		}
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(2500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		gameDataPanel.getComponent(currentBoard.getCuurentLives()).hide();
 		gameDataPanel.repaint();
 		pacman.restartTimer();
-		for(int i=0;i<ghosts.length;i++){
-			ghosts[i].restartTimer();
-			ghosts[i].resetRoundTripDelay();
+		for(int ghostIndex=0;ghostIndex<ghosts.length;ghostIndex++){
+			ghosts[ghostIndex].restartTimer();
+			ghosts[ghostIndex].resetRoundTripDelay();
 		}
 	}
-	private void GameOver() {
+	private void playerLose() {
 		multiBoard.removeAll();
 		multiBoard.repaint();
 		try {
@@ -1072,9 +1092,9 @@ public class gameManager extends JPanel{
 			e.printStackTrace();
 		}
 		
-		JButton backBtn = new JButton("Back");
-		backBtn.setBounds(frameWidth /2 - 40, frameHeight - 80, 80, 20);
-		backBtn.addActionListener(new ActionListener()
+		JButton returnButton = new JButton("Back");
+                setBtnProperties(returnButton,frameWidth /2 - 40, frameHeight - 80, 80, 20);
+		returnButton.addActionListener(new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
 		    {
@@ -1086,23 +1106,25 @@ public class gameManager extends JPanel{
 		gameOverPanel.setOpaque(false);
 		gameOverPanel.setSize(frameWidth, frameHeight);
 		multiBoard.add(gameOverPanel,new Integer(0));
-		multiBoard.add(backBtn,new Integer(1));
+		multiBoard.add(returnButton,new Integer(1));
 		gameOverPanel.setFocusable(true);
 		multiBoard.repaint();
 	}
 	private void stopMovement() {
 		pacman.stopTimer();
-		for(int i=0;i<ghosts.length;i++)
-			ghosts[i].stopTimer();
+		for(int ghostIndex=0;ghostIndex<ghosts.length;ghostIndex++)
+			ghosts[ghostIndex].stopTimer();
 	}
-	private boolean collision(int xCoor, int yCoor) {
-		Point[] ghostsCoor = new Point[ghosts.length];
+	private boolean collisionHappendWithGhost(int xPosition, int yPosition) {
+		Point[] ghostsCordinations = new Point[ghosts.length];
 		for(int i=0;i<ghosts.length;i++){
-			ghostsCoor[i] = new Point((int)Math.round((ghosts[i].getXIndexPosition())/squareWidth), (int)Math.round((ghosts[i].getYIndexPosition())/squareHeight));
-			if((int)ghostsCoor[i].getX() == xCoor && (int)ghostsCoor[i].getY() == yCoor){
+                        int ghostxCord = (int)Math.round((ghosts[i].getXIndexPosition())/squareWidth);
+                        int ghostYCord = (int)Math.round((ghosts[i].getYIndexPosition())/squareHeight);
+			ghostsCordinations[i] = new Point(ghostxCord, ghostYCord);
+			if((int)ghostsCordinations[i].getX() == xPosition && (int)ghostsCordinations[i].getY() == yPosition){
 				if(ghosts[i].eats(pacman))
 					return true;
-				else{ //reset eaten ghost coordinates
+				else{ 
 					updateGhostPosition(i);
 				}
 			}
