@@ -126,7 +126,7 @@ public class gameManager extends JPanel{
 		mapWidth=448;
 		squareHeight=mapHeight/31;
 		squareWidth=mapWidth/28;
-		maxFood = initialBoard.getMaxFood();
+		maxFood = initialBoard.getMaximumFood();
 		
 		//Exit Symbol
 		thisGame.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -926,16 +926,16 @@ public class gameManager extends JPanel{
 		int yCoor = (int)Math.round((currY + pacman.getDeltaY())/squareHeight);		
 
 		if(collision((int)Math.round((currX)/squareWidth),(int)Math.round((currY)/squareHeight)) == true){ //Collision			
-			if(currentBoard.getLives() == 3){ //First Dec
-				currentBoard.setFirstDecTimer(new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
+			if(currentBoard.getCuurentLives() == 3){ //First Dec
+				currentBoard.setFirstDecrementTimer(new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
 			}
-			currentBoard.decLives();
+			currentBoard.decrementLives();
 			stopMovement();
-			if(currentBoard.getLives()>0) //Keep Playing
+			if(currentBoard.getCuurentLives()>0) //Keep Playing
 				Reorganize();
 			else{
 				GameOver();
-				currentBoard.setEndTimer(new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
+				currentBoard.setFinalTimer(new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
 				if(currentUser != "")
 					try {
 						UpdateUserStatistics();
@@ -953,30 +953,30 @@ public class gameManager extends JPanel{
 		if(currentBoard.getCellType(yCoor,xCoor) instanceof FoodCell && movedBefore){
 			currentBoard.setCellType(yCoor,xCoor,E);
 			if(yCoor==1 && xCoor==1 || yCoor==29 && xCoor==1){ //Mighty
-				currentBoard.addScore(15);
+				currentBoard.addToCuurentScore(15);
 				pacman.destroyPacman();
 				pacman = new MightyPacman(this, pacman.getXIndex(), pacman.getYIndex(), pacman.getPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
 				initPacmanProperties();
 			}
 			else if(yCoor==1 && xCoor==26 || yCoor==29 && xCoor==26){ //Super
-				currentBoard.addScore(15);
+				currentBoard.addToCuurentScore(15);
 				pacman.destroyPacman();
 				pacman = new SuperPacman(this, pacman.getXIndex(), pacman.getYIndex(), pacman.getPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
 				initPacmanProperties();
 			}
 			else
-				currentBoard.addScore(3);
+				currentBoard.addToCuurentScore(3);
 
 			JLabel score = (JLabel)gameDataPanel.getComponent(4);
 			
-			score.setText(Integer.toString(currentBoard.getScore()));
+			score.setText(Integer.toString(currentBoard.getCurrentScore()));
 			itemsBoard.repaint();
 		}
-		if(currentBoard.getCurrentFoodNumber() == 0){ //Win
-			currentBoard.addScore(20 * currentBoard.getLives());
+		if(currentBoard.getFoodCurrentNumber() == 0){ //Win
+			currentBoard.addToCuurentScore(20 * currentBoard.getCuurentLives());
 			stopMovement();
 			WinGame();
-			currentBoard.setEndTimer(new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
+			currentBoard.setFinalTimer(new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
 			if(currentUser != "")
 				try {
 					UpdateUserStatistics();
@@ -994,13 +994,13 @@ public class gameManager extends JPanel{
 	}
 	private void UpdateUserStatistics() throws ParseException {
 		User userRecord = getUser(currentUser);		
-		String currScore = Integer.toString(currentBoard.getScore());
+		String currScore = Integer.toString(currentBoard.getCurrentScore());
 		DateFormat df = new java.text.SimpleDateFormat("hh:mm:ss");
 		Date date1 = df.parse(currentBoard.getStartTimer());
-		Date date2 = df.parse(currentBoard.getEndTimer());
+		Date date2 = df.parse(currentBoard.getFinalTimer());
 		long diff = date2.getTime() - date1.getTime();			
 		String currBestTime =  Long.toString(diff / 1000); //In Seconds
-		String tempDecTime = currentBoard.getFirstDecTimer();
+		String tempDecTime = currentBoard.getFirstDecrementTimer();
 		String currFirstDecTime;
 		if(tempDecTime == ""){
 			currFirstDecTime = currBestTime;
@@ -1064,7 +1064,7 @@ public class gameManager extends JPanel{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		gameDataPanel.getComponent(currentBoard.getLives()).hide();
+		gameDataPanel.getComponent(currentBoard.getCuurentLives()).hide();
 		gameDataPanel.repaint();
 		pacman.restart();
 		for(int i=0;i<ghosts.length;i++){

@@ -12,31 +12,43 @@ public class Board {
 		height = b[0].length;
 		board = new Cell[width][height];
 		CellType type = null;
-		for(int i=0; i<width; i++)
-			for(int j=0; j<height;j++){
-				switch(b[i][j]){
-				case 1: type = new WallCell(); break;
-				case 2: type = new FoodCell(); break;
-				case 3: type = new EmptyCell(); break;
-				}
-				board[i][j] = new Cell(i,j,type);
-			}
+                fillBoard(b, type);
+                
 	}
 
-	public Board(Board copy) {
+    private void fillBoard(int[][] b, CellType type) {
+        for(int i=0; i<width; i++)
+            for(int j=0; j<height;j++){
+                switch(b[i][j]){
+                    case 1: type = new WallCell(); break;
+                    case 2: type = new FoodCell(); break;
+                    case 3: type = new EmptyCell(); break;
+                }
+                board[i][j] = new Cell(i,j,type);
+            }
+    }
+    
+
+	public Board(Board b) {
 		this.gameManager = new GameData(3,0);
-		this.width = copy.width;
-		this.height = copy.height;
+		this.width = b.width;
+		this.height = b.height;
 		this.board = new Cell[width][height];
-		for(int i=0; i<width; i++)
+                fillBoard(b);
+	
+	}
+        
+        public void  fillBoard(Board b) {
+            	for(int i=0; i<width; i++)
 			for(int j=0; j<height;j++){
-				switch(copy.getCellTypeValue(i, j)){
+				switch(b.getCellTypeValue(i, j)){
 				case 1: board[i][j] = new Cell(i ,j, new WallCell()); break;
 				case 2: board[i][j] = new Cell(i ,j, new FoodCell()); break;
 				case 3: board[i][j] = new Cell(i ,j, new EmptyCell()); break;
 				}
 			}
-	}
+            
+        }
 
 	public Cell[][] getBoard(){
 		return board;
@@ -50,74 +62,75 @@ public class Board {
 		return height;
 	}
 
-	public int getMaxFood() {
-		int count=0;
+	public int getMaximumFood() {
+		int counter=0;
 		for(int i= 0; i< width ; i++)
 		{
 			for (int j=0; j< height ; j++){
-				CellType currType = board[i][j].getCellType();
-				if(currType instanceof FoodCell){
-					count++;
+				CellType currentType = board[i][j].getCellType();
+				if(currentType instanceof FoodCell){
+					counter++;
 				}
 			}
 		}
-		return count;
+		return counter;
 	}
-	public int getCurrentFoodNumber(){
-		int count=0;
+	public int getFoodCurrentNumber(){
+		int counter=0;
 		for(int i= 0; i< width ; i++)
 		{
 			for (int j=0; j< height ; j++){
 				if(board[i][j].getCellType() instanceof FoodCell){
-					count++;
+					counter++;
 				}
 			}
 		}
-		return count;
+		return counter;
 	}
 
-	public CellType getCellType(int i, int j) {
-		return board[i][j].getCellType();
+	public CellType getCellType(int posX, int posY) {
+		return board[posX][posY].getCellType();
 	}
 	
-	public int getCellTypeValue(int i, int j) {
-		return board[i][j].getCellTypeValue();
+	public int getCellTypeValue(int posX, int posY) {
+		return board[posX][posY].getCellTypeValue();
 	}
 
-	public void setCellType(int yCoor, int xCoor, int type) {
-		switch(type){
-		case 1: board[yCoor][xCoor].setCellType(new WallCell()); break;
-		case 2: board[yCoor][xCoor].setCellType(new FoodCell()); break;
-		case 3: board[yCoor][xCoor].setCellType(new EmptyCell()); break;
-		case 4: board[yCoor][xCoor].setCellType(new MightyFoodCell()); break;
-		case 5: board[yCoor][xCoor].setCellType(new SuperFoodCell()); break;
+	public void setCellType(int posX, int posY, int cellType) {
+		switch(cellType){
+		case 1: board[posX][posY].setCellType(new WallCell()); break;
+		case 2: board[posX][posY].setCellType(new FoodCell()); break;
+		case 3: board[posX][posY].setCellType(new EmptyCell()); break;
+		case 4: board[posX][posY].setCellType(new MightyFoodCell()); break;
+		case 5: board[posX][posY].setCellType(new SuperFoodCell()); break;
 		}
 	}
-	public int getLives(){
-		return gameManager.getLives();
+        public void addToCuurentScore(int scoreToAdd){
+		gameManager.addScore(scoreToAdd);
 	}
-	public void decLives(){
-		gameManager.decLives();
-	}
-	public int getScore(){
-		return gameManager.getScore();
-	}
-	public void addScore(int i){
-		gameManager.addScore(i);
-	}
-	public void setEndTimer(String end){
-		gameManager.setEndTimer(end);
+	public void setFinalTimer(String endString){
+		gameManager.setEndTimer(endString);
 	}
 	public String getStartTimer(){
 		return gameManager.getStartTimer();
 	}
-	public String getEndTimer(){
+	public String getFinalTimer(){
 		return gameManager.getEndTimer();
 	}
-	public String getFirstDecTimer(){
+	public String getFirstDecrementTimer(){
 		return gameManager.getFirstDecTimer();
 	}
-	public void setFirstDecTimer(String dec){
+	public void setFirstDecrementTimer(String dec){
 		gameManager.setFirstDecTimer(dec);
 	}
+	public int getCuurentLives(){
+		return gameManager.getLives();
+	}
+	public void decrementLives(){
+		gameManager.decLives();
+	}
+	public int getCurrentScore(){
+		return gameManager.getScore();
+	}
+	
 }
