@@ -142,7 +142,7 @@ public class gameManager extends JPanel{
 		multiBoard.setPreferredSize(new Dimension(mapHeight, mapWidth));
 		
 		LoadUsersFromFile();
-		LoadStatistics();
+		LoadAllPreviousStatistics();
 		setBoardMainScreen();
 
 		// Final stuff
@@ -177,11 +177,11 @@ public class gameManager extends JPanel{
 	private void setBoardMainScreen() {
 		multiBoard.removeAll();
 		multiBoard.repaint();		
-		JPanel mainScreenBackground = createMainBackground();
+		JPanel mainScreenBackground = createMainPanelBackground();
 		mainScreenBackground.setBounds(0, 0, mapWidth, mapHeight + bottomPanelHeight);
 		multiBoard.add(mainScreenBackground, new Integer(0));
 		
-		JPanel mainScreenButtons = createMainButtons();
+		JPanel mainScreenButtons = createGeneralButtonsForMain();
 		setMainScreenButtons(mainScreenButtons);
 		
 	}
@@ -362,131 +362,175 @@ public class gameManager extends JPanel{
 	}
 	private boolean checkConfigurationsDetails(JPanel panel){
 		if(playerMode!= 0 && gameMode != 0){
-    		if(playerMode == 1){ //Real Player
-				String username = JOptionPane.showInputDialog(null, "Enter Username:", "Username", 1);
-				String password = JOptionPane.showInputDialog(null, "Enter Password:", "Username", 1);
-    			if(isValidMember(username,password) == true){
-    				currentUser = username;
-    				return true;
-    			}
-    			else
-    				JOptionPane.showMessageDialog(panel, "Invalid Username / Password, Please Try Again", "Error Window",0);
-    		}	
-    		else{ //Demo Player
-    			currentUser = "@demo";
-    			addNewMember(currentUser,"d","0","0");
-    			statistics.set(2, statistics.get(2)+1);
-    			return true;
-    		}
-    	}
-    	else{
-    		JOptionPane.showMessageDialog(panel, "Make Sure You Chose Player & Game Mode", "Error Window",0);
-    	}
-		return false;
-	}
-	private JPanel createHighScoresPanel(){
-		sortScores();
-		int[] ageCounter = new int[7];
-		JPanel highScoresPanel = new JPanel();
-		highScoresPanel.setLayout(null);
-		highScoresPanel.setBackground(Color.BLACK);
+                        if(playerMode != 1){
+                                currentUser = "@demo";
+                                addNewMember(currentUser,"d","0","0");
+                                statistics.set(2, statistics.get(2)+1);
+                                return true;
+                        }	
+                        else{ //Real Player                                                       
+                                        String username = JOptionPane.showInputDialog(null, "Enter Username:", "Username", 1);
+                                        String password = JOptionPane.showInputDialog(null, "Enter Password:", "Username", 1);
+                                if(userMemberIsValid(username,password) == true){
+                                        currentUser = username;
+                                        return true;
+                                }
+                                else
+                                        JOptionPane.showMessageDialog(panel, "Check cradentials again", "Error Window",0);
+                        }
+                }
+                else{
+                         JOptionPane.showMessageDialog(panel, "Make Sure You Chose Player & Game Mode", "Error Window",0);
+                }
+                
+                return false;
+        }
+	private JPanel createHighestGradeScorePanel(){
+		sortAllScores();
+		int[] ageArrayCountUsers = new int[7];
+                //start high score preferences.
+		JPanel highestGradeScorePanel = new JPanel();
+		highestGradeScorePanel.setLayout(null);
+		highestGradeScorePanel.setBackground(Color.BLACK);
+                //finish high score proferenes
 		
-		JLabel titleLabel = new JLabel("High Scores");
-		titleLabel.setForeground(Color.WHITE);
-		titleLabel.setFont(new Font("Arial", Font.BOLD,20));
-		titleLabel.setBounds(frameWidth / 2 - 65, frameHeight / 8 - 50, 200, 40);
-		
-		highScoresPanel.add(titleLabel);
-		
-		JLabel nameLabel = new JLabel("Username");
-		nameLabel.setForeground(Color.blue);
-		nameLabel.setBounds(frameWidth / 10 - 20, frameHeight / 8 , 100, 20);
-		highScoresPanel.add(nameLabel);
+		JLabel lblTitle = new JLabel("High Scores");
+                setLabelProperties(lblTitle,"White",currentWidth / 2 - 65, currentHeight / 8 - 50, 200, 40);
+		JLabel nameLabel = new JLabel("User Name");
+                setLabelProperties(nameLabel,"Blue",frameWidth / 10 - 20, currentHeight / 8 , 100, 20);
 		
 		JLabel scoreLabel = new JLabel("Score");
-		scoreLabel.setForeground(Color.blue);
-		scoreLabel.setBounds((frameWidth / 10) + 80 , frameHeight / 8 , 80, 20);
-		highScoresPanel.add(scoreLabel);
+                setLabelProperties(scoreLabel,"Blue",(currentWidth / 10) + 80 , (currentHeight / 8) , 80, 20);
 		
 		JLabel bestTimeLabel = new JLabel("Best Time");
-		bestTimeLabel.setForeground(Color.blue);
-		bestTimeLabel.setBounds((frameWidth / 10) + 160, frameHeight / 8 , 100, 20);
-		highScoresPanel.add(bestTimeLabel);
+                setLabelProperties(bestTimeLabel,"Blue",(currentWidth / 10) + 140, currentHeight / 8 , 100, 20);
 		
-		JLabel bestTimeUntilCol = new JLabel("Collision Best Time");
-		bestTimeUntilCol.setForeground(Color.blue);
-		bestTimeUntilCol.setBounds((frameWidth / 10) + 260, frameHeight / 8 , 150, 20);
-		highScoresPanel.add(bestTimeUntilCol);
+		JLabel bestTimeUntilCollision = new JLabel("Collision Best Time");
+                setLabelProperties(bestTimeUntilCollision,"Blue",(currentWidth / 10) + 220, currentHeight / 8 , 150, 20);
+		highestGradeScorePanel.add(bestTimeUntilCollision);
+                highestGradeScorePanel.add(lblTitle);	
+                highestGradeScorePanel.add(nameLabel);
+                highestGradeScorePanel.add(scoreLabel);
+                highestGradeScorePanel.add(bestTimeLabel);
+
+
+
+
 		
 		for(int i=0; i < users.size(); i++){
-			JLabel currName = new JLabel();
-			currName.setForeground(Color.WHITE);
-			JLabel currScore = new JLabel();
-			currScore.setForeground(Color.WHITE);
-			JLabel currBestTime = new JLabel();
-			currBestTime.setForeground(Color.WHITE);
-			JLabel currBestCollTime = new JLabel();
-			currBestCollTime.setForeground(Color.WHITE);
-			
-			currName.setText(users.get(i).getUsername());
-			if(!currName.getText().equals("@demo") && users.get(i).getUserScore() != 0){
+			JLabel currLabelName = new JLabel();
+                        setColor(currLabelName,"White");
+			JLabel currLabelScore = new JLabel();
+                        setColor(currLabelScore,"White");
+			JLabel currBestTimeLabel = new JLabel();
+                        setColor(currBestTimeLabel,"White");
+                        JLabel currBestCollisionTime = new JLabel();
+                        setColor(currBestCollisionTime,"White");			
+			currLabelName.setText(users.get(i).getUsername());
+                        //meaning its not a computer
+			if( users.get(i).getUserScore() != 0 && !currLabelName.getText().equals("@demo")){
 				int counterPlace = (int)((users.get(i).getUserAge()-1)/10);
 				if(counterPlace > 6)
-					ageCounter[6]++;
+					ageArrayCountUsers[6]++;
 				else
-					ageCounter[counterPlace]++;
+					ageArrayCountUsers[counterPlace]++;
 			}
-			currScore.setText(users.get(i).getUserScore() + "");
-			currBestTime.setText(users.get(i).getUserBestTime()+"");
-			currBestCollTime.setText(users.get(i).getUserBestCollisionTime()+"");
-			currName.setBounds(frameWidth / 10 - 20, frameHeight / 8 + 50 * (i+1), 100, 20);
-			currScore.setBounds((frameWidth / 10) + 80 , frameHeight / 8 + 50 * (i+1), 80, 20);
-			currBestTime.setBounds((frameWidth / 10) + 160, frameHeight / 8 + 50 * (i+1), 100, 20);
-			currBestCollTime.setBounds((frameWidth / 10) + 260, frameHeight / 8 + 50 * (i+1), 150, 20);
-			highScoresPanel.add(currName);
-			highScoresPanel.add(currScore);
-			highScoresPanel.add(currBestTime);
-			highScoresPanel.add(currBestCollTime);
+			currLabelScore.setText(users.get(i).getUserScore() + "");
+			fillUserRow(currBestTimeLabel, i, currBestCollisionTime, currLabelName, currLabelScore);    
+			highestGradeScorePanel.add(currLabelName);
+			highestGradeScorePanel.add(currLabelScore);
+			highestGradeScorePanel.add(currBestTimeLabel);
+			highestGradeScorePanel.add(currBestCollisionTime);
 		}
-		JButton statBtn = new JButton("Game Statistics");
-		statBtn.setBounds(frameWidth /2 - 70, frameHeight - 120, 140, 20);
-		statBtn.addActionListener(new ActionListener()
+		JButton myGameStatistics = new JButton("Game Statistics");
+		myGameStatistics.setBounds(currentWidth /2 - 60, currentHeight - 110, 160, 20);
+		myGameStatistics.addActionListener(new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
 		    {
-		    	double totalGames = statistics.get(0) + statistics.get(1) + statistics.get(2);
-		        String genderStats = "Gender:: Men: 0% Women: 0% Computers: 0%";
-		        String ageStats = "Ages:: 0-10: " + ageCounter[0] + " 11-20: "+ ageCounter[1] +" 21-30: "+ ageCounter[2] +" 31-40: "+ ageCounter[3] +" 41-50: "+ ageCounter[4] +" 51-60: "+ ageCounter[5] +" 60+: "+ ageCounter[6];
-		        if(totalGames != 0)
-		        	genderStats = "Gender:: Men: " + Math.round((double)(statistics.get(0)/totalGames)*100) + "% Women: " + Math.round((double)(statistics.get(1)/totalGames)*100) + "% Computers: " + Math.round((double)(statistics.get(2)/totalGames)*100) + "%";
-		        JOptionPane.showMessageDialog(highScoresPanel, genderStats + "\n" + ageStats, "Statistics Window", 3);
+		    	double allNumberOfGames = statistics.get(0) + statistics.get(1) + statistics.get(2);
+		        String genderStatistics = "Gender:: Men: 0% Women: 0% Computers: 0%";
+                        double first = Math.round((double)statistics.get(0)/allNumberOfGames)*100;
+                        double second = Math.round((double)statistics.get(1)/allNumberOfGames)*100;
+                        double third = Math.round((double)statistics.get(2)/allNumberOfGames)*100;
+		        String ageStatistics = "Ages: 0-10: " + ageArrayCountUsers[0] + " 11-20: "+ ageArrayCountUsers[1] +" 21-30: "+ ageArrayCountUsers[2] +" 31-40: "+ ageArrayCountUsers[3] +" 41-50: "+ ageArrayCountUsers[4] +" 51-60: "+ ageArrayCountUsers[5] +" 60+: "+ ageArrayCountUsers[6];
+		        if(allNumberOfGames != 0)
+		        	genderStatistics = "Gender: Men: " + first + "% Women: " + second + "% Computers: " + third + "%";
+		        JOptionPane.showMessageDialog(highestGradeScorePanel, genderStatistics + "\n" + ageStatistics, "Statistics Window", 3);
 		    }
 		});
-		highScoresPanel.add(statBtn);
+		highestGradeScorePanel.add(myGameStatistics);
+                String resultTest = "";
+                
+                for(int i=1 ; i<10 ; i++) {
+                    
+                    
+                }
 		
-		JButton backBtn = new JButton("Back");
-		backBtn.setBounds(frameWidth /2 - 40, frameHeight - 80, 80, 20);
-		backBtn.addActionListener(new ActionListener()
+		JButton returnButton = new JButton("Return");
+                setBtnProperties(returnButton,currentWidth /2 - 40, currentHeight - 80, 80, 20);
+		returnButton.addActionListener(new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
 		    {
 		        setBoardMainScreen();
 		    }
 		});
-		highScoresPanel.add(backBtn);
-		
-		
-		return highScoresPanel;
+		highestGradeScorePanel.add(returnButton);	
+		return highestGradeScorePanel;
 	}
-	private JPanel createMainButtons() {
-		int btnWidth = 150;
-		int btnHeight = 30;
-		JPanel buttonsPanel = new JPanel();
-		buttonsPanel.setLayout(null);
 
-		JButton newGameBtn = new JButton("New Game");
-		newGameBtn.setBounds(frameWidth/2 - btnWidth/2, frameHeight/2 - btnHeight, btnWidth, btnHeight);
-		newGameBtn.addActionListener( new ActionListener()
+    private void fillUserRow(JLabel currBestTimeLabel, int i, JLabel currBestCollisionTime, JLabel currLabelName, JLabel currLabelScore) {
+        int newCurrentHeight = currentHeight /8;
+        currBestTimeLabel.setText(users.get(i).getUserBestTime()+"");
+        currBestCollisionTime.setText(users.get(i).getUserBestCollisionTime()+"");
+        currLabelName.setBounds(currentWidth / 10 - 10, newCurrentHeight + 50 * (i+1), 100, 20);
+        currLabelScore.setBounds((currentWidth / 10) + 70 , newCurrentHeight + 50 * (i+1), 80, 20);
+        currBestTimeLabel.setBounds((currentWidth / 10) + 150, newCurrentHeight + 50 * (i+1), 100, 20);
+        currBestCollisionTime.setBounds((currentWidth / 10) + 250, newCurrentHeight + 50 * (i+1), 150, 20);
+    }
+	private JPanel createGeneralButtonsForMain() {
+		int buttonWidth = 140;
+		int buttonHeight = 25;
+		JPanel newButtonPanel = new JPanel();
+		newButtonPanel.setLayout(null);
+
+		JButton btnNewGame = new JButton("New Game");
+                setBtnProperties(btnNewGame,currentWidth/2 - buttonWidth/2, currentHeight/2 - buttonHeight, buttonWidth, buttonHeight);
+		
+		JButton registrationBtn = new JButton("Sign Up");
+                setBtnProperties(registrationBtn,currentWidth/2 - buttonWidth/2, currentHeight/2 - buttonHeight + 1*buttonHeight, buttonWidth, buttonHeight);
+                
+                JButton returnExitButton = new JButton("Exit");
+                setBtnProperties(returnExitButton,currentWidth/2 - buttonWidth/2, currentHeight/2 - buttonHeight + 3*buttonHeight, buttonWidth, buttonHeight);
+		
+		
+		JButton btnHighScores = new JButton("High Scores");
+                setBtnProperties(btnHighScores,currentWidth/2 - buttonWidth/2, currentHeight/2 - buttonHeight + 2*buttonHeight, buttonWidth, buttonHeight);
+                
+		btnHighScores.addActionListener(new ActionListener()
+		{
+		    public void actionPerformed(ActionEvent e)
+		    {
+		        multiBoard.removeAll();
+		        multiBoard.repaint();
+		        JPanel highScoresPanel = createHighestGradeScorePanel();
+		        highScoresPanel.setBounds(0, 0, mapWidth, mapHeight + bottomPanelHeight);
+				multiBoard.add(highScoresPanel, new Integer(0));
+		    }
+		});
+                registrationBtn.addActionListener(new ActionListener()
+		{
+		    public void actionPerformed(ActionEvent e)
+		    {
+		        multiBoard.removeAll();
+		        multiBoard.repaint();
+		        JPanel registerPanel = CreateRegistrationLPanel();
+		        registerPanel.setBounds(0, 0, mapWidth, mapHeight + bottomPanelHeight);
+				multiBoard.add(registerPanel, new Integer(0));
+		    }
+		});
+                	btnNewGame.addActionListener( new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
 		    {
@@ -498,37 +542,8 @@ public class gameManager extends JPanel{
 		    }
 		});
 		
-		JButton signUpBtn = new JButton("Sign Up");
-		signUpBtn.setBounds(frameWidth/2 - btnWidth/2, frameHeight/2 - btnHeight + 1*btnHeight, btnWidth, btnHeight);
-		signUpBtn.addActionListener(new ActionListener()
-		{
-		    public void actionPerformed(ActionEvent e)
-		    {
-		        multiBoard.removeAll();
-		        multiBoard.repaint();
-		        JPanel signUpPanel = CreateRegistrationLPanel();
-		        signUpPanel.setBounds(0, 0, mapWidth, mapHeight + bottomPanelHeight);
-				multiBoard.add(signUpPanel, new Integer(0));
-		    }
-		});
-		
-		JButton scoresBtn = new JButton("High Scores");
-		scoresBtn.setBounds(frameWidth/2 - btnWidth/2, frameHeight/2 - btnHeight + 2*btnHeight, btnWidth, btnHeight);
-		scoresBtn.addActionListener( new ActionListener()
-		{
-		    public void actionPerformed(ActionEvent e)
-		    {
-		        multiBoard.removeAll();
-		        multiBoard.repaint();
-		        JPanel highScoresPanel = createHighScoresPanel();
-		        highScoresPanel.setBounds(0, 0, mapWidth, mapHeight + bottomPanelHeight);
-				multiBoard.add(highScoresPanel, new Integer(0));
-		    }
-		});
-		
-		JButton exitBtn = new JButton("Exit");
-		exitBtn.setBounds(frameWidth/2 - btnWidth/2, frameHeight/2 - btnHeight + 3*btnHeight, btnWidth, btnHeight);
-		exitBtn.addActionListener( new ActionListener()
+
+		returnExitButton.addActionListener( new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
 		    {
@@ -537,144 +552,165 @@ public class gameManager extends JPanel{
 		    }
 		});
 		
-		buttonsPanel.add(newGameBtn);
-		buttonsPanel.add(signUpBtn);
-		buttonsPanel.add(scoresBtn);
-		buttonsPanel.add(exitBtn);
-		return buttonsPanel;
+		newButtonPanel.add(btnNewGame);
+		newButtonPanel.add(registrationBtn);
+		newButtonPanel.add(btnHighScores);
+		newButtonPanel.add(returnExitButton);
+		return newButtonPanel;
 	}
-	private JPanel createMainBackground() {
+	private JPanel createMainPanelBackground() {
 		try {
-			mainBackground = new JPanel(){
-				private static final long serialVersionUID = 1L;
-				private Image img = ImageIO.read(getClass().getClassLoader().getResource("Img/newWelcomeScreen.jpg"));
-				public void paint( Graphics g ) { 
-					super.paint(g);
-					g.drawImage(img,0,0,frameWidth , frameHeight, null);
-				}
-			};
+			initMainBackground();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		return mainBackground;
 	}
-	private JPanel createBackground(){
+
+    private void initMainBackground() throws IOException {
+        mainBackground = new JPanel(){
+            private static final long serialVersionUID = 1L;
+            private Image img = ImageIO.read(getClass().getClassLoader().getResource("Img/newWelcomeScreen.jpg"));
+            public void paint( Graphics g ) {
+                super.paint(g);
+                g.drawImage(img,0,0,frameWidth , frameHeight, null);
+            }
+        };
+    }
+	private JPanel createBoardBackground(){
 		try {
-			background = new JPanel(){
-				private static final long serialVersionUID = 1L;
-				private Image wallImg = ImageIO.read(getClass().getClassLoader().getResource("Img/myWall.jpg"));
-				private Image emptyImg = ImageIO.read(getClass().getClassLoader().getResource("Img/emptyImage.jpg"));
-				public void paint( Graphics g ) { 
-					super.paint(g);
-					for (int i=0; i<currentBoard.getWidth(); i++)
-						for (int j=0; j<currentBoard.getHeight(); j++) {
-							if(currentBoard.getCellType(i,j).getCellType() == 1){
-								g.drawImage(wallImg, (int)(j*(squareWidth)), (int)(i*(squareHeight)),(int)squareHeight, (int) squareHeight,null);
-							}
-							else if(currentBoard.getCellType(i,j).getCellType() == 3){
-								g.drawImage(emptyImg, (int)(j*(squareWidth)), (int)(i*(squareHeight)),(int)squareHeight, (int) squareHeight,null);
-							}
-						}
-				}
-			};
+			initalizeBoardBackground();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		background.setVisible(true);
 		return background;
 	}
+
+    private void initalizeBoardBackground() throws IOException {
+        background = new JPanel(){
+            private static final long serialVersionUID = 1L;
+            //init pictures
+            private Image wallImg = ImageIO.read(getClass().getClassLoader().getResource("Img/myWall.jpg"));
+            private Image emptyImg = ImageIO.read(getClass().getClassLoader().getResource("Img/emptyImage.jpg"));
+            //drawing all empty cell and walls
+            public void paint( Graphics g ) {
+                super.paint(g);
+                for (int i=0; i<currentBoard.getWidth(); i++)
+                    for (int j=0; j<currentBoard.getHeight(); j++) {
+                        if(currentBoard.getCellType(i,j).getCellType() == 3){
+                            g.drawImage(emptyImg, (int)(j*(squareWidth)), (int)(i*(squareHeight)),(int)squareHeight, (int) squareHeight,null);
+                        }
+                        else if(currentBoard.getCellType(i,j).getCellType() == 1){
+                            g.drawImage(wallImg, (int)(j*(squareWidth)), (int)(i*(squareHeight)),(int)squareHeight, (int) squareHeight,null);
+                        }
+                        
+                    }
+            }
+        };
+    }
 	private JPanel createGameDataPanel() {
 		gameDataPanel = new JPanel();
 		gameDataPanel.setLayout(null);
 		gameDataPanel.setBackground(Color.BLACK);
 		gameDataPanel.setVisible(true);
 		try {
-			Image lifeImage = ImageIO.read(getClass().getClassLoader().getResource("Img/lifeImage.png"));
-			Image resizedLifeImage = lifeImage.getScaledInstance((int)squareWidth, (int)squareHeight, Image.SCALE_DEFAULT);
-			JLabel lifeLabel1 = new JLabel(new ImageIcon(resizedLifeImage));
-			lifeLabel1.setBounds(0, 0, 20, 20);
-			JLabel lifeLabel2 = new JLabel(new ImageIcon(resizedLifeImage));
-			lifeLabel2.setBounds(20, 0, 20, 20);
-			JLabel lifeLabel3 = new JLabel(new ImageIcon(resizedLifeImage));
-			lifeLabel3.setBounds(40, 0, 20, 20);
-
-			gameDataPanel.add(lifeLabel1,0);
-			gameDataPanel.add(lifeLabel2,1);
-			gameDataPanel.add(lifeLabel3,2);
+			drawLifeToBoard();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		JLabel scoreTitle = new JLabel("Score: ");
-		scoreTitle.setBounds(frameWidth/2 - 50, 0, 50, 20);
-		JLabel scoreValue = new JLabel("0");
-		scoreValue.setBounds(frameWidth/2, 0, 100, 20);
-		scoreTitle.setForeground(Color.WHITE);
-		scoreValue.setForeground(Color.WHITE);
+		JLabel lblScore = new JLabel("Score: ");
+		JLabel scoreValue = drawScoreOnBoard(lblScore);
 		
-		gameDataPanel.add(scoreTitle,3);
+		gameDataPanel.add(lblScore,3);
 		gameDataPanel.add(scoreValue,4);
 		
-		JButton backBtn = new JButton("Back");
-		backBtn.setFont(new Font("Arial",Font.BOLD, 10));
-		backBtn.setMargin(new Insets (0, 0, 0, 0));
-		backBtn.setBounds(frameWidth - 67, 2, 50, 20);
-		backBtn.addActionListener(new ActionListener()
-		{
-		    public void actionPerformed(ActionEvent e)
-		    {
-				removeComponents();
-		        setBoardMainScreen();
-		    }
-		});
+		JButton returnBtn = new JButton("Return");
+		drawReturnButtonInMainPanel(returnBtn);
 
-		gameDataPanel.add(backBtn);
+		gameDataPanel.add(returnBtn);
 		
 		return gameDataPanel;
 	}
+
+    private void drawReturnButtonInMainPanel(JButton returnBtn) {
+        returnBtn.setFont(new Font("Arial",Font.BOLD, 10));
+        returnBtn.setMargin(new Insets (0, 0, 0, 0));
+        returnBtn.setBounds(frameWidth - 67, 2, 50, 20);
+        returnBtn.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                resetPacmanAndGhostComponents();
+                setBoardMainScreen();
+            }
+        });
+    }
+
+    private JLabel drawScoreOnBoard(JLabel lblScore) {
+        lblScore.setBounds(frameWidth/2 - 50, 0, 50, 20);
+        JLabel scoreValue = new JLabel("0");
+        scoreValue.setBounds(frameWidth/2, 0, 100, 20);
+        lblScore.setForeground(Color.GREEN);
+        scoreValue.setForeground(Color.GREEN);
+        return scoreValue;
+    }
+
+    private void drawLifeToBoard() throws IOException {
+        Image lifeImage = ImageIO.read(getClass().getClassLoader().getResource("Img/lifeImage.png"));
+        Image resizedLifeImage = lifeImage.getScaledInstance((int)squareWidth, (int)squareHeight, Image.SCALE_DEFAULT);
+        JLabel lifeLabel1 = new JLabel(new ImageIcon(resizedLifeImage));
+        lifeLabel1.setBounds(0, 0, 20, 20);
+        JLabel lifeLabel2 = new JLabel(new ImageIcon(resizedLifeImage));
+        lifeLabel2.setBounds(20, 0, 20, 20);
+        JLabel lifeLabel3 = new JLabel(new ImageIcon(resizedLifeImage));
+        lifeLabel3.setBounds(40, 0, 20, 20);
+        gameDataPanel.add(lifeLabel1,0);
+        gameDataPanel.add(lifeLabel2,1);
+        gameDataPanel.add(lifeLabel3,2);
+    }
 	//////////////////////////////END-JPanels///////////////////////////////
 	private boolean addNewMember(String name, String sex, String age, String password) {
-		if(name == "")
+		if(name == "" || sex=="" || (!name.equals("@demo") && !(sex.toLowerCase().equals("m") || sex.toLowerCase().equals("f"))) ||age == ""|| password == "")
 			return false;
-		if(sex == "" || (!name.equals("@demo") && !(sex.toLowerCase().equals("m") || sex.toLowerCase().equals("f"))))
-			return false;
-		if(age == "" || !tryParseInt(age))
-			return false;
-		if(password == "")
-			return false;
-		
 		for(int i=0; i<users.size(); i++){
 			if(users.get(0).getUsername().equals(name)){
-				if(!name.equals("@demo")){
-					JOptionPane.showMessageDialog(null, "Username is already Exist", "Error Window",0);
+				if(name.equals("@demo")){
 					return false;
 				}
 				else{
+					JOptionPane.showMessageDialog(null, "Username is already Exist", "Error Window",0);
 					return false;
 				}
 			}
 		}
-		users.add(new User(name, sex.charAt(0), Integer.parseInt(age), password));
+                int parsedAge = Integer.parseInt(age);
+                char sexChar = sex.charAt(0); 
+		users.add(new User(name, sexChar, parsedAge, password));
 		return true;
 	}
-	private void LoadStatistics(){
+	private void LoadAllPreviousStatistics(){
 		try {
 			File statisticsFile = new File(statisticsPath);
-			if(statisticsFile.exists()){
-				BufferedReader br = new BufferedReader(new FileReader(statisticsFile));
-				String[] stats = br.readLine().split(";");
-				br.close();
-				for(int i=0;i<stats.length;i++)
-					statistics.add(Integer.parseInt(stats[i]));
+			if(!statisticsFile.exists()){
+                            statisticsFile.createNewFile();
+				FileWriter fWriter = new FileWriter(new File(statisticsPath),false);
+				fWriter.write("0;0;0"); //Men - Women - Comp
+				fWriter.close();
+				for(int j=0;j<3;j++)
+					statistics.add(j, new Integer(0));
 			}
 			else{
-				statisticsFile.createNewFile();
-				FileWriter fw = new FileWriter(new File(statisticsPath),false);
-				fw.write("0;0;0"); //Men - Women - Comp
-				fw.close();
-				for(int i=0;i<3;i++)
-					statistics.add(i, new Integer(0));
+                                                        
+                            
+				BufferedReader bReader = new BufferedReader(new FileReader(statisticsFile));
+				String[] currentStatistics = bReader.readLine().split(";");
+				bReader.close();
+				for(int i=0;i<currentStatistics.length;i++)
+					statistics.add(Integer.parseInt(currentStatistics[i]));
+				
 			}
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
@@ -685,110 +721,117 @@ public class gameManager extends JPanel{
 		}
 	}
 	public void SaveStatistics(){
-		try {
-			FileWriter fw = new FileWriter(new File(statisticsPath),false);
-			String newStats = "";
-			for (int d : statistics)
-			{
-				newStats += d + ";";
+            try {
+			FileWriter fWriter = new FileWriter(new File(membersPath),false); //New Content
+			for(int j=0; j< users.size(); j++){
+				fWriter.write(users.get(j).getString() + "\n");
 			}
-			newStats = newStats.substring(0, newStats.length()-1);
-			fw.write(newStats);
-			fw.close();
+			fWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			FileWriter fWriter = new FileWriter(new File(statisticsPath),false);
+			String newStatistics = "";
+			for (int s : statistics)
+			{
+				newStatistics += s + ";";
+			}
+			newStatistics = newStatistics.substring(0, newStatistics.length()-1);
+			fWriter.write(newStatistics);
+			fWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		try {
-			FileWriter fw = new FileWriter(new File(membersPath),false); //New Content
-			for(int i=0; i< users.size(); i++){
-				fw.write(users.get(i).getString() + "\n");
-			}
-			fw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
 		
 	}
-	private User getUser(String name) {
+	private User getCurrentUser(String userName) {
+            
 		for(int i=0; i < users.size(); i++){
-			if(users.get(i).getUsername().equals(name))
+			if(users.get(i).getUsername().equals(userName))
 				return users.get(i);
 		}
 		return null;
 	}
-	private boolean tryParseInt(String value) {  
+	private boolean tryToParseIntFromString(String currentValue) {  
 	     try {  
-	         Integer.parseInt(value);  
+	         Integer.parseInt(currentValue);
+                 for(int i=0;i<users.size();i++) { 
+                if(users.get(i).getUsername().equals("")) {            
+                }
+        }
 	         return true;  
-	      } catch (NumberFormatException e) {  
+	      } catch (Exception e) {  
 	         return false;  
 	      }  
 	}
-	private boolean isValidMember(String username, String password) {
-		User userRecord = getUser(username);
-		if(userRecord == null){
-			return false;
-		}
-		else{
-			if(password.equals(userRecord.getUserPassword())){
-				if(userRecord.getUserSex() == 'm')
+	private boolean userMemberIsValid(String username, String password) {
+		User MatchingUser = getCurrentUser(username);
+		if(MatchingUser != null){
+			if(password.equals(MatchingUser.getUserPassword())){
+				if(MatchingUser.getUserSex() == 'm')
 	    			statistics.set(0, statistics.get(0)+1);
-				else if(userRecord.getUserSex() == 'f')
+				else if(MatchingUser.getUserSex() == 'f')
 	    			statistics.set(1, statistics.get(1)+1);
 				return true;
 			}
 		}
+		else{
+                    return false;
+			
+		}
 		return false;
 	}
-	private void setGameScreen(int playerType, int gameMode, int ghostDelay) {
-		multiBoard.removeAll();
-		multiBoard.repaint();
-		currentBoard = new Board(initialBoard);
-		
-		// Creates the background.
-		JPanel background = createBackground();
-		background.setBounds(0, 0, mapWidth, mapHeight);
-		background.setBackground(Color.BLACK);
-		multiBoard.add(background, new Integer(0));
-		
-		// Creates the GameData Panel
+	private void setGameScreen(int typeOfPlayer, int modeGameSelected, int delayGhostSelected) {
+		removeAndCreateNewBoard();
 		gameDataPanel = createGameDataPanel();
-		gameDataPanel.setBounds(0,496,frameWidth,bottomPanelHeight);
-		multiBoard.add(gameDataPanel, new Integer(4));
-		
-		// Creates the items board - Placing food in proper places
+		gameDataPanel.setBounds(0,496,currentWidth,currentHeight);		
+		JPanel panelBackground = createBoardBackground();
+		panelBackground.setBounds(0, 0, mapWidth, mapHeight);
+		panelBackground.setBackground(Color.BLACK);
 		CreateItemBoard();
 		itemsBoard.setOpaque(false);
 		itemsBoard.setSize(mapWidth, mapHeight);
 		itemsBoard.setBackground(null);
 		multiBoard.add(itemsBoard,new Integer (1));
-		
+                multiBoard.add(panelBackground, new Integer(0));
+                multiBoard.add(gameDataPanel, new Integer(4));		
 		// Places Ghosts on the board
-		if(gameMode == 1) //Easy Mode
-			ghosts = new Ghost[2];
-		else if(gameMode == 2)
+		if(modeGameSelected == 2) //Easy Mode
 			ghosts = new Ghost[4];
-		
-		for(int i=0;i<ghosts.length;i++){
-			ghosts[i] = placeGhost(i, ghostDelay);
-			ghosts[i].setOpaque(false);
-			ghosts[i].setSize(mapWidth, mapHeight);
-			multiBoard.add(ghosts[i],new Integer(2));
-			ghosts[i].setFocusable(true);
-		}
-		
+		else if(modeGameSelected == 1)
+			ghosts = new Ghost[2];		
+                placeGhostsInMap(delayGhostSelected);		
 		// Places Pacman on the board.
-		pacman = placePacman(playerType);
+		pacman = placePacman(typeOfPlayer);
 		initPacmanProperties();
+                
 	}
+
+    private void removeAndCreateNewBoard() {
+        multiBoard.removeAll();
+        multiBoard.repaint();
+        currentBoard = new Board(initialBoard);
+    }
+
+    private void placeGhostsInMap(int delayGhostSelected) {
+        for(int i=0;i<ghosts.length;i++){
+            ghosts[i] = placeGhostsInsideMap(i, delayGhostSelected);
+            ghosts[i].setOpaque(false);
+            ghosts[i].setSize(mapWidth, mapHeight);
+            multiBoard.add(ghosts[i],new Integer(2));
+            ghosts[i].setFocusable(true);
+        }
+    }
 	private void initPacmanProperties() {
 		pacman.setOpaque(false);
 		pacman.setSize(mapWidth, mapHeight);
 		multiBoard.add(pacman,new Integer(3));
 		pacman.setFocusable(true);
 	}
-	private void removeComponents() {;
+	private void resetPacmanAndGhostComponents() {;
 		//user
 		currentUser="";
 		
@@ -802,42 +845,47 @@ public class gameManager extends JPanel{
 		//board
 		currentBoard=null;
 	}
-	private Ghost placeGhost(int i, int delay) {
-		if(i == 0)
-			return new WeakGhost(this, 14*squareWidth,15*squareHeight, 1, delay);
-		if(i == 1)
-			return new StrongGhost(this, 12*squareWidth,15*squareHeight, 3, delay);
-		if(i == 2)
-			return new WeakGhost(this, 13*squareWidth,15*squareHeight, 1, delay);
-		if(i == 3)
-			return new StrongGhost(this, 15*squareWidth,15*squareHeight, 3, delay);
+	private Ghost placeGhostsInsideMap(int typeOfGhost, int chosenDelay) {
+		if(typeOfGhost == 0)
+			return new WeakGhost(this, 14*squareWidth,15*squareHeight, 1, chosenDelay);
+		if(typeOfGhost == 1)
+			return new StrongGhost(this, 12*squareWidth,15*squareHeight, 3, chosenDelay);
+		if(typeOfGhost == 2)
+			return new WeakGhost(this, 13*squareWidth,15*squareHeight, 1, chosenDelay);
+		if(typeOfGhost == 3)
+			return new StrongGhost(this, 15*squareWidth,15*squareHeight, 3, chosenDelay);
 		return null;
 	}
 	private void CreateItemBoard(){
 		try {
 			itemsBoard = new JPanel(){
 				private static final long serialVersionUID = 1L;
+                                private Image mightyfood = ImageIO.read(getClass().getClassLoader().getResource("Img/fruit1.png"));
+				private Image superfood = ImageIO.read(getClass().getClassLoader().getResource("Img/fruit0.png"));
 				private Image food = ImageIO.read(getClass().getClassLoader().getResource("Img/NormalPoint.png"));
-				private Image mightyfood = ImageIO.read(getClass().getClassLoader().getResource("Img/mightyFood.png"));
-				private Image superfood = ImageIO.read(getClass().getClassLoader().getResource("Img/superFood.png"));
+
 				public void paint (Graphics g){
 					super.paint(g);
-					for (int i=0; i<currentBoard.getWidth(); i++)
-						for (int j=0; j<currentBoard.getHeight(); j++) {
-							if(currentBoard.getCellType(i,j).getCellType() == 2){
-								if(i==1 && j==1)
-									g.drawImage(mightyfood, (int)(j*(squareWidth)), (int)(i*(squareHeight)),(int)squareWidth, (int)squareHeight, null);
-								else if(i==1 && j==26)
-									g.drawImage(superfood, (int)(j*(squareWidth)), (int)(i*(squareHeight)),(int)squareWidth, (int)squareHeight, null);
-								else if(i==29 && j==1)
-									g.drawImage(mightyfood, (int)(j*(squareWidth)), (int)(i*(squareHeight)),(int)squareWidth, (int)squareHeight, null);
-								else if(i==29 && j==26)
-									g.drawImage(superfood, (int)(j*(squareWidth)), (int)(i*(squareHeight)),(int)squareWidth, (int)squareHeight, null);
-								else
-									g.drawImage(food, (int)(j*(squareWidth)), (int)(i*(squareHeight)),(int)squareWidth, (int)squareHeight, null);
+					for (int xCellNumber=0; xCellNumber<currentBoard.getWidth(); xCellNumber++)
+						for (int yCellNumber=0; yCellNumber<currentBoard.getHeight(); yCellNumber++) {
+							if(currentBoard.getCellType(xCellNumber,yCellNumber).getCellType() == 2){                                                            
+                                                             drawMightyAndSuperFood(xCellNumber, yCellNumber, g);
 							}
 						}
 				}
+
+                            private void drawMightyAndSuperFood(int xCellNumber, int yCellNumber, Graphics g) {
+                                if(xCellNumber==1 && yCellNumber==1)
+                                    g.drawImage(mightyfood, (int)(yCellNumber*(squareWidth)), (int)(xCellNumber*(squareHeight)),(int)squareWidth, (int)squareHeight, null);
+                                else if(xCellNumber==1 && yCellNumber==26)
+                                    g.drawImage(superfood, (int)(yCellNumber*(squareWidth)), (int)(xCellNumber*(squareHeight)),(int)squareWidth, (int)squareHeight, null);
+                                else if(xCellNumber==29 && yCellNumber==1)
+                                    g.drawImage(mightyfood, (int)(yCellNumber*(squareWidth)), (int)(xCellNumber*(squareHeight)),(int)squareWidth, (int)squareHeight, null);
+                                else if(xCellNumber==29 && yCellNumber==26)
+                                    g.drawImage(superfood, (int)(yCellNumber*(squareWidth)), (int)(xCellNumber*(squareHeight)),(int)squareWidth, (int)squareHeight, null);
+                                else
+                                    g.drawImage(food, (int)(yCellNumber*(squareWidth)), (int)(xCellNumber*(squareHeight)),(int)squareWidth, (int)squareHeight, null);
+                            }
 			};
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -929,7 +977,7 @@ public class gameManager extends JPanel{
 		return true;
 	}
 	private void UpdateUserStatistics() throws ParseException {
-		User userRecord = getUser(currentUser);		
+		User userRecord = getCurrentUser(currentUser);		
 		String currScore = Integer.toString(currentBoard.getCurrentScore());
 		DateFormat df = new java.text.SimpleDateFormat("hh:mm:ss");
 		Date date1 = df.parse(currentBoard.getStartTimer());
@@ -953,7 +1001,7 @@ public class gameManager extends JPanel{
 		if(userRecord.getUserBestCollisionTime() < Integer.parseInt(currFirstDecTime))
 			userRecord.setBestUserCollisionTime(Integer.parseInt(currFirstDecTime));
 	}
-	private void sortScores() {
+	private void sortAllScores() {
 		Collections.sort(users, new PacmanComparator());
 	}
 	private void WinGame() {
@@ -1087,12 +1135,14 @@ public class gameManager extends JPanel{
                 if(color.equals("White"))
 		lblTitle.setForeground(Color.WHITE);
                 else if(color.equals("Green")) { 
-                    
+                    		lblTitle.setForeground(Color.GREEN);                
                 }else if(color.equals("Black")) {
-                    
+                    		lblTitle.setForeground(Color.BLACK);               
                 }
-                else {
-                    
+                else if(color.equals("Blue")) {
+                    		lblTitle.setForeground(Color.BLUE);          
+                }
+                else {                 
                 }
 		lblTitle.setBounds(posX, posY, width, height);   
     }
@@ -1110,5 +1160,14 @@ public class gameManager extends JPanel{
 
     private void setBtnProperties(JButton realPlayerBtn, int posX, int posY, int width, int height) {
 		realPlayerBtn.setBounds(posX , posY,width, height);
+    }
+
+    private void setColor(JLabel currLabelName, String color) {
+        if(color.equals("White"))
+	currLabelName.setForeground(Color.WHITE);
+        else if(color.equals("black")) { 
+            	currLabelName.setForeground(Color.BLACK);
+
+        }
     }
 }

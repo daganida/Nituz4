@@ -6,7 +6,7 @@ public class smartStrategy implements StrategyInterface{
 
 	@Override
 	public void nextMove(Character ghost, Character pacman) {
-		String options = "";
+		String directionsAvailable = "";
                 
 
 		Board board = ghost.getBoard().getBoard();
@@ -21,7 +21,7 @@ public class smartStrategy implements StrategyInterface{
 		int ghostY = (int)Math.round((ghost.getYIndexPosition())/height);
 
                 
-                options = fillAllPossibleOptions(ghostX,ghostY,board);
+                directionsAvailable = fillAllPossibleOptions(ghostX,ghostY,board);
 		String direction = "";
                 //the start of the distance
 		int minDistance = Integer.MAX_VALUE;
@@ -29,16 +29,16 @@ public class smartStrategy implements StrategyInterface{
                 boolean isMinDistance = false;
                 double xDistanceFromPacman,yDistanceFromPacman;
 		
-		if(options.contains("L")){
+		if(directionsAvailable.contains("L")){
                            
-                               isMinDistance = isMinDistance(Math.abs(ghostX-1-pacmanX),Math.abs(ghostY-pacmanY),minDistance);
+                            isMinDistance = isMinDistance(Math.abs(ghostX-1-pacmanX),Math.abs(ghostY-pacmanY),minDistance);
                             if(isMinDistance){
                             currentDistance = (int)calculateDistance(Math.abs(ghostX-1-pacmanX),Math.abs(ghostY-pacmanY));
                                       direction = "L";
                                    minDistance=currentDistance; 
                             }
 		}
-		if(options.contains("R")){
+		if(directionsAvailable.contains("R")){
                              isMinDistance = isMinDistance(Math.abs(ghostX+1-pacmanX),Math.abs(ghostY-pacmanY),minDistance);
                             if(isMinDistance){
                             currentDistance = (int)calculateDistance(Math.abs(ghostX+1-pacmanX),Math.abs(ghostY-pacmanY));
@@ -46,7 +46,7 @@ public class smartStrategy implements StrategyInterface{
                                    minDistance=currentDistance; 
                             }
 		}	
-		if(options.contains("U")){
+		if(directionsAvailable.contains("U")){
                            isMinDistance = isMinDistance(Math.abs(ghostX-pacmanX),Math.abs(ghostY-1-pacmanY),minDistance);
                             if(isMinDistance){
                             currentDistance = (int)calculateDistance(Math.abs(ghostX-pacmanX),Math.abs(ghostY-1-pacmanY));
@@ -54,7 +54,7 @@ public class smartStrategy implements StrategyInterface{
                                    minDistance=currentDistance; 
                             }
 		}
-		if(options.contains("D")){
+		if(directionsAvailable.contains("D")){
                             isMinDistance = isMinDistance(Math.abs(ghostX-pacmanX),Math.abs(ghostY+1-pacmanY),minDistance);
                             if(isMinDistance){
                             currentDistance = (int)calculateDistance(Math.abs(ghostX-pacmanX),Math.abs(ghostY+1-pacmanY));
