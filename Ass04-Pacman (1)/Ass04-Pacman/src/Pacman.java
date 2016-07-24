@@ -14,33 +14,21 @@ public abstract class Pacman extends Character implements KeyListener{
 	private long startRoundTime;
 
 	//Constructor
-	public Pacman(gameManager controller, double startingPointX, double startingPointY, int playerType, int deltaX, int deltaY){
-		this.playerType = playerType;
-		this.deltaX=deltaX;
-		this.deltaY=deltaY;
-		this.characterSpeed=10;
-		this.startingXPosition = startingPointX;
-		this.startingYPosition = startingPointY;
-		this.xPosition=startingPointX;
-		this.yPosition=startingPointY;
-		this.isRegular = true;
-		this.gameManager = controller;
-		this.characterImage = getCorrectIcon();
-		this.shouldChangeDirection = true;
-		this.strategy = new RandomStrategy();
+	public Pacman(gameManager gameManager, double xStartingPosition, double yStartingPosition, int typeOfPlayer, int deltaX, int deltaY){
+		setPacmanPreferences(typeOfPlayer, deltaX, deltaY, xStartingPosition, yStartingPosition, gameManager);
 		this.myTimer=new Timer(characterSpeed/5,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				grabFocus();
 				if (e.getSource()==myTimer){
-					if(playerType == 1)
+					if(typeOfPlayer == 1)
 						move();
 					else
-						moveRandom();
+						moveRandomaly();
 					if(isRegular == false){
-						if(checkTimerToChangedBack() == true){
+						if(checkIfWeNeedToChangeBackToRegular() == true){
 							isRegular=true;
-							controller.resetPacman();
+							gameManager.resetPacman();
 						}
 					}
 				}
@@ -49,12 +37,29 @@ public abstract class Pacman extends Character implements KeyListener{
 		});
 		
 		this.setVisible(true);
-		if(playerType == 1)
+		if(typeOfPlayer == 1)
 			this.addKeyListener(this);
 		this.setFocusable(true);
 		this.requestFocus(true);
 		myTimer.start();
 	}
+
+    private void setPacmanPreferences(int typeOfPlayer, int deltaX1, int deltaY1, double xStartingPosition, double yStartingPosition, gameManager gameManager1) {
+        this.playerType = typeOfPlayer;
+        this.startingYPosition = yStartingPosition;
+        this.xPosition=xStartingPosition;
+        this.yPosition=yStartingPosition;
+        this.isRegular = true;
+        this.gameManager = gameManager1;
+        this.characterImage = getCorrectIcon();
+        this.shouldChangeDirection = true;
+        this.strategy = new RandomStrategy();
+        this.deltaX = deltaX1;
+        this.deltaY = deltaY1;
+        this.characterSpeed=10;
+        this.startingXPosition = xStartingPosition;
+    
+    }
 
 	private ImageIcon getCorrectIcon() {
 		if(deltaX == 1){
@@ -72,13 +77,13 @@ public abstract class Pacman extends Character implements KeyListener{
 		return leftIcone();
 	}
 
-	protected boolean checkTimerToChangedBack() {
+	protected boolean checkIfWeNeedToChangeBackToRegular() {
 		if(System.currentTimeMillis() - startRoundTime > 10 * 1000)
 			return true;
 		return false;
 	}
 
-	public int getPlayerType(){
+	public int getCurrentPlayerType(){
 		return playerType;
 	}
 
@@ -88,33 +93,39 @@ public abstract class Pacman extends Character implements KeyListener{
 			yPosition=yPosition+deltaY;
 		}	
 	}
-	public void moveRandom(){
+	public void moveRandomaly(){
 		if(shouldChangeDirection == true){
 			strategy.nextMove(this);
 			shouldChangeDirection = false;
 		}
-		int xCoor = (int)Math.round((xPosition+deltaX)/gameManager.getSquareWidth());
-		int yCoor = (int)Math.round((yPosition+deltaY)/gameManager.getSquareHeight());
+		int xCordinate = (int)Math.round((xPosition+deltaX)/gameManager.getSquareWidth());
+		int yCordinates = (int)Math.round((yPosition+deltaY)/gameManager.getSquareHeight());
 
-		if(gameManager.getBoard().getCellType(yCoor, xCoor).getCellType() == 1)
-			shouldChangeDirection=true;
+		if(!(gameManager.getBoard().getCellType(yCordinates, xCordinate).getCellType() == 1)) { 
+                    updateGameManagerMovement();                                     
+                }
 		else{
-			this.xPosition=xPosition+deltaX;
-			this.yPosition=yPosition+deltaY;
-			if(deltaX == 1){
-				this.characterImage = rightIcone();
-			}
-			else if(deltaX == -1){
-				this.characterImage = leftIcone();
-			}
-			else if(deltaY ==1){
-				this.characterImage = downIcone();
-			}
-			else
-				this.characterImage = upIcone();
-			gameManager.canMove(xPosition, yPosition);
+                    shouldChangeDirection=true;
+
 		}
 	}
+
+    private void updateGameManagerMovement() {
+        this.xPosition=xPosition+deltaX;
+        this.yPosition=yPosition+deltaY;
+        if(deltaX == 1){
+            this.characterImage = rightIcone();
+        }
+        else if(deltaX == -1){
+            this.characterImage = leftIcone();
+        }
+        else if(deltaY ==1){
+            this.characterImage = downIcone();
+        }
+        else
+            this.characterImage = upIcone();
+        gameManager.canMove(xPosition, yPosition);
+    }
 
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode()==KeyEvent.VK_LEFT){
@@ -158,13 +169,15 @@ public abstract class Pacman extends Character implements KeyListener{
 		this.isRegular = false;
 	}
 	
-	public void destroyPacman(){
-		this.strategy = null;
-		this.myTimer.stop();
-		this.setVisible(false);
+	public void deletePacmanFromMap(){
+            String result = "";
+            this.setVisible(false);
 		this.removeKeyListener(this);
 		this.setFocusable(false);
 		this.requestFocus(false);
+		this.strategy = null;
+		this.myTimer.stop();
+		
 	}
 	@Override
 	public void replace(){

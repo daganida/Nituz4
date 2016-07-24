@@ -493,16 +493,16 @@ public class gameManager extends JPanel{
 			currBestCollTime.setForeground(Color.WHITE);
 			
 			currName.setText(users.get(i).getUsername());
-			if(!currName.getText().equals("@demo") && users.get(i).getScore() != 0){
-				int counterPlace = (int)((users.get(i).getAge()-1)/10);
+			if(!currName.getText().equals("@demo") && users.get(i).getUserScore() != 0){
+				int counterPlace = (int)((users.get(i).getUserAge()-1)/10);
 				if(counterPlace > 6)
 					ageCounter[6]++;
 				else
 					ageCounter[counterPlace]++;
 			}
-			currScore.setText(users.get(i).getScore() + "");
-			currBestTime.setText(users.get(i).getBestTime()+"");
-			currBestCollTime.setText(users.get(i).getBestColTime()+"");
+			currScore.setText(users.get(i).getUserScore() + "");
+			currBestTime.setText(users.get(i).getUserBestTime()+"");
+			currBestCollTime.setText(users.get(i).getUserBestCollisionTime()+"");
 			currName.setBounds(frameWidth / 10 - 20, frameHeight / 8 + 50 * (i+1), 100, 20);
 			currScore.setBounds((frameWidth / 10) + 80 , frameHeight / 8 + 50 * (i+1), 80, 20);
 			currBestTime.setBounds((frameWidth / 10) + 160, frameHeight / 8 + 50 * (i+1), 100, 20);
@@ -795,10 +795,10 @@ public class gameManager extends JPanel{
 			return false;
 		}
 		else{
-			if(password.equals(userRecord.getPassword())){
-				if(userRecord.getSex() == 'm')
+			if(password.equals(userRecord.getUserPassword())){
+				if(userRecord.getUserSex() == 'm')
 	    			statistics.set(0, statistics.get(0)+1);
-				else if(userRecord.getSex() == 'f')
+				else if(userRecord.getUserSex() == 'f')
 	    			statistics.set(1, statistics.get(1)+1);
 				return true;
 			}
@@ -954,14 +954,14 @@ public class gameManager extends JPanel{
 			currentBoard.setCellType(yCoor,xCoor,E);
 			if(yCoor==1 && xCoor==1 || yCoor==29 && xCoor==1){ //Mighty
 				currentBoard.addToCuurentScore(15);
-				pacman.destroyPacman();
-				pacman = new MightyPacman(this, pacman.getXIndexPosition(), pacman.getYIndexPosition(), pacman.getPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
+				pacman.deletePacmanFromMap();
+				pacman = new MightyPacman(this, pacman.getXIndexPosition(), pacman.getYIndexPosition(), pacman.getCurrentPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
 				initPacmanProperties();
 			}
 			else if(yCoor==1 && xCoor==26 || yCoor==29 && xCoor==26){ //Super
 				currentBoard.addToCuurentScore(15);
-				pacman.destroyPacman();
-				pacman = new SuperPacman(this, pacman.getXIndexPosition(), pacman.getYIndexPosition(), pacman.getPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
+				pacman.deletePacmanFromMap();
+				pacman = new SuperPacman(this, pacman.getXIndexPosition(), pacman.getYIndexPosition(), pacman.getCurrentPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
 				initPacmanProperties();
 			}
 			else
@@ -1010,12 +1010,12 @@ public class gameManager extends JPanel{
 			long diff2 = date3.getTime() - date1.getTime();
 			currFirstDecTime =  Long.toString(diff2 / 1000);
 		}
-		if(userRecord.getScore() < Double.parseDouble(currScore))
-			userRecord.setScore(Double.parseDouble(currScore));
-		if(userRecord.getBestTime() < Integer.parseInt(currBestTime))
-			userRecord.setBestTime(Integer.parseInt(currBestTime));
-		if(userRecord.getBestColTime() < Integer.parseInt(currFirstDecTime))
-			userRecord.setBestColTime(Integer.parseInt(currFirstDecTime));
+		if(userRecord.getUserScore() < Double.parseDouble(currScore))
+			userRecord.setUserScore(Double.parseDouble(currScore));
+		if(userRecord.getUserBestTime() < Integer.parseInt(currBestTime))
+			userRecord.setUserBestTime(Integer.parseInt(currBestTime));
+		if(userRecord.getUserBestCollisionTime() < Integer.parseInt(currFirstDecTime))
+			userRecord.setBestUserCollisionTime(Integer.parseInt(currFirstDecTime));
 	}
 	private void sortScores() {
 		Collections.sort(users, new PacmanComparator());
@@ -1069,7 +1069,7 @@ public class gameManager extends JPanel{
 		pacman.restartTimer();
 		for(int i=0;i<ghosts.length;i++){
 			ghosts[i].restartTimer();
-			ghosts[i].resetRoundDelay();
+			ghosts[i].resetRoundTripDelay();
 		}
 	}
 	private void GameOver() {
@@ -1127,7 +1127,7 @@ public class gameManager extends JPanel{
 	}
 	private void updateGhostPosition(int i) {
 		ghosts[i].replace();
-		ghosts[i].resetRoundDelay();
+		ghosts[i].resetRoundTripDelay();
 	}
 	public Board getBoard(){
 		return currentBoard;
@@ -1142,8 +1142,8 @@ public class gameManager extends JPanel{
 		return pacman;
 	}
 	public void resetPacman(){
-		pacman.destroyPacman();
-		pacman = new RegularPacman(this, pacman.getXIndexPosition(), pacman.getYIndexPosition(), pacman.getPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
+		pacman.deletePacmanFromMap();
+		pacman = new RegularPacman(this, pacman.getXIndexPosition(), pacman.getYIndexPosition(), pacman.getCurrentPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
 		initPacmanProperties();
 	}
 

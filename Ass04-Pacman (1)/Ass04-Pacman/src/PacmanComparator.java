@@ -2,11 +2,11 @@ import java.util.Comparator;
 
 public class PacmanComparator implements Comparator<User>{
     @Override
-	public int compare(User o1, User o2) {
-        if(o1.getScore() > o2.getScore())
-        	return -1;
-        else if(o2.getScore() > o1.getScore())
+	public int compare(User user1, User user2) {
+        if(user1.getUserScore() < user2.getUserScore())
         	return 1;
+        else if(user2.getUserScore() < user1.getUserScore())
+        	return -1;
         return 0;
     }
 }

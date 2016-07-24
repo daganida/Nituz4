@@ -8,7 +8,7 @@ public class GameFrame extends JFrame {
 
 	//Constructor
 	public GameFrame(){
-		super("The Pac-Man Game");
+		super("PacMan");
 		createBoard();
 	}
 
