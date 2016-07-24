@@ -955,13 +955,13 @@ public class gameManager extends JPanel{
 			if(yCoor==1 && xCoor==1 || yCoor==29 && xCoor==1){ //Mighty
 				currentBoard.addToCuurentScore(15);
 				pacman.destroyPacman();
-				pacman = new MightyPacman(this, pacman.getXIndex(), pacman.getYIndex(), pacman.getPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
+				pacman = new MightyPacman(this, pacman.getXIndexPosition(), pacman.getYIndexPosition(), pacman.getPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
 				initPacmanProperties();
 			}
 			else if(yCoor==1 && xCoor==26 || yCoor==29 && xCoor==26){ //Super
 				currentBoard.addToCuurentScore(15);
 				pacman.destroyPacman();
-				pacman = new SuperPacman(this, pacman.getXIndex(), pacman.getYIndex(), pacman.getPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
+				pacman = new SuperPacman(this, pacman.getXIndexPosition(), pacman.getYIndexPosition(), pacman.getPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
 				initPacmanProperties();
 			}
 			else
@@ -987,9 +987,9 @@ public class gameManager extends JPanel{
 		}
 		
 		if(xCoor == currentBoard.getHeight() - 1 && pacman.getDeltaX() == 1)
-			pacman.setXindex(0);
+			pacman.setXIndexPosition(0);
 		if(xCoor == 0 && pacman.getDeltaX() == -1)
-			pacman.setXindex(squareWidth * (currentBoard.getHeight() - 1));
+			pacman.setXIndexPosition(squareWidth * (currentBoard.getHeight() - 1));
 		return true;
 	}
 	private void UpdateUserStatistics() throws ParseException {
@@ -1054,7 +1054,7 @@ public class gameManager extends JPanel{
 	private void Reorganize() {
 		resetPacman();
 		pacman.replace();
-		pacman.zeroDeltaXY();
+		pacman.resetDeltaXAndY();
 		pacman.setDirectionToTrue();
 		for(int i=0;i<ghosts.length;i++){
 			ghosts[i].replace();
@@ -1066,9 +1066,9 @@ public class gameManager extends JPanel{
 		}
 		gameDataPanel.getComponent(currentBoard.getCuurentLives()).hide();
 		gameDataPanel.repaint();
-		pacman.restart();
+		pacman.restartTimer();
 		for(int i=0;i<ghosts.length;i++){
-			ghosts[i].restart();
+			ghosts[i].restartTimer();
 			ghosts[i].resetRoundDelay();
 		}
 	}
@@ -1107,14 +1107,14 @@ public class gameManager extends JPanel{
 		multiBoard.repaint();
 	}
 	private void stopMovement() {
-		pacman.stop();
+		pacman.stopTimer();
 		for(int i=0;i<ghosts.length;i++)
-			ghosts[i].stop();
+			ghosts[i].stopTimer();
 	}
 	private boolean collision(int xCoor, int yCoor) {
 		Point[] ghostsCoor = new Point[ghosts.length];
 		for(int i=0;i<ghosts.length;i++){
-			ghostsCoor[i] = new Point((int)Math.round((ghosts[i].getXIndex())/squareWidth), (int)Math.round((ghosts[i].getYIndex())/squareHeight));
+			ghostsCoor[i] = new Point((int)Math.round((ghosts[i].getXIndexPosition())/squareWidth), (int)Math.round((ghosts[i].getYIndexPosition())/squareHeight));
 			if((int)ghostsCoor[i].getX() == xCoor && (int)ghostsCoor[i].getY() == yCoor){
 				if(ghosts[i].eats(pacman))
 					return true;
@@ -1143,7 +1143,7 @@ public class gameManager extends JPanel{
 	}
 	public void resetPacman(){
 		pacman.destroyPacman();
-		pacman = new RegularPacman(this, pacman.getXIndex(), pacman.getYIndex(), pacman.getPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
+		pacman = new RegularPacman(this, pacman.getXIndexPosition(), pacman.getYIndexPosition(), pacman.getPlayerType(), pacman.getDeltaX(), pacman.getDeltaY());
 		initPacmanProperties();
 	}
 

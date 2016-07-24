@@ -18,21 +18,21 @@ public abstract class Pacman extends Character implements KeyListener{
 		this.playerType = playerType;
 		this.deltaX=deltaX;
 		this.deltaY=deltaY;
-		this.speed=10;
-		this.startX = startingPointX;
-		this.startY = startingPointY;
-		this.x=startingPointX;
-		this.y=startingPointY;
+		this.characterSpeed=10;
+		this.startingXPosition = startingPointX;
+		this.startingYPosition = startingPointY;
+		this.xPosition=startingPointX;
+		this.yPosition=startingPointY;
 		this.isRegular = true;
-		this.controller = controller;
-		this.image = getCorrectIcon();
-		this.toChangeDirection = true;
+		this.gameManager = controller;
+		this.characterImage = getCorrectIcon();
+		this.shouldChangeDirection = true;
 		this.strategy = new RandomStrategy();
-		this.timer=new Timer(speed/5,new ActionListener() {
+		this.myTimer=new Timer(characterSpeed/5,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				grabFocus();
-				if (e.getSource()==timer){
+				if (e.getSource()==myTimer){
 					if(playerType == 1)
 						move();
 					else
@@ -53,7 +53,7 @@ public abstract class Pacman extends Character implements KeyListener{
 			this.addKeyListener(this);
 		this.setFocusable(true);
 		this.requestFocus(true);
-		timer.start();
+		myTimer.start();
 	}
 
 	private ImageIcon getCorrectIcon() {
@@ -83,55 +83,55 @@ public abstract class Pacman extends Character implements KeyListener{
 	}
 
 	public void move(){
-		if(controller.canMove(x,y) == true){
-			x=x+deltaX;
-			y=y+deltaY;
+		if(gameManager.canMove(xPosition,yPosition) == true){
+			xPosition=xPosition+deltaX;
+			yPosition=yPosition+deltaY;
 		}	
 	}
 	public void moveRandom(){
-		if(toChangeDirection == true){
+		if(shouldChangeDirection == true){
 			strategy.nextMove(this);
-			toChangeDirection = false;
+			shouldChangeDirection = false;
 		}
-		int xCoor = (int)Math.round((x+deltaX)/controller.getSquareWidth());
-		int yCoor = (int)Math.round((y+deltaY)/controller.getSquareHeight());
+		int xCoor = (int)Math.round((xPosition+deltaX)/gameManager.getSquareWidth());
+		int yCoor = (int)Math.round((yPosition+deltaY)/gameManager.getSquareHeight());
 
-		if(controller.getBoard().getCellType(yCoor, xCoor).getCellType() == 1)
-			toChangeDirection=true;
+		if(gameManager.getBoard().getCellType(yCoor, xCoor).getCellType() == 1)
+			shouldChangeDirection=true;
 		else{
-			this.x=x+deltaX;
-			this.y=y+deltaY;
+			this.xPosition=xPosition+deltaX;
+			this.yPosition=yPosition+deltaY;
 			if(deltaX == 1){
-				this.image = rightIcone();
+				this.characterImage = rightIcone();
 			}
 			else if(deltaX == -1){
-				this.image = leftIcone();
+				this.characterImage = leftIcone();
 			}
 			else if(deltaY ==1){
-				this.image = downIcone();
+				this.characterImage = downIcone();
 			}
 			else
-				this.image = upIcone();
-			controller.canMove(x, y);
+				this.characterImage = upIcone();
+			gameManager.canMove(xPosition, yPosition);
 		}
 	}
 
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode()==KeyEvent.VK_LEFT){
-			image = leftIcone();
-			setMoveLeft();
+			characterImage = leftIcone();
+			setMovementLeft();
 		}
 		if (e.getKeyCode()==KeyEvent.VK_RIGHT){
-			image = rightIcone();
-			setMoveRight();
+			characterImage = rightIcone();
+			setMovementRight();
 		}
 		if (e.getKeyCode()==KeyEvent.VK_UP){
-			image = upIcone();
-			setMoveUp();
+			characterImage = upIcone();
+			setMovementUp();
 		}
 		if (e.getKeyCode()==KeyEvent.VK_DOWN){
-			image = downIcone();
-			setMoveDown();
+			characterImage = downIcone();
+			setMovementDown();
 		}
 	}
 	public ImageIcon leftIcone() {
@@ -151,7 +151,7 @@ public abstract class Pacman extends Character implements KeyListener{
 	public void keyTyped(KeyEvent arg0) {
 	}
 	public void setDirectionToTrue() {
-		this.toChangeDirection = true;
+		this.shouldChangeDirection = true;
 	}
 	public void initializeTransitionTimers(){
 		this.startRoundTime = System.currentTimeMillis();
@@ -160,7 +160,7 @@ public abstract class Pacman extends Character implements KeyListener{
 	
 	public void destroyPacman(){
 		this.strategy = null;
-		this.timer.stop();
+		this.myTimer.stop();
 		this.setVisible(false);
 		this.removeKeyListener(this);
 		this.setFocusable(false);
@@ -168,7 +168,7 @@ public abstract class Pacman extends Character implements KeyListener{
 	}
 	@Override
 	public void replace(){
-		this.x = 14 * controller.getSquareWidth();
-		this.y = 23 * controller.getSquareHeight();
+		this.xPosition = 14 * gameManager.getSquareWidth();
+		this.yPosition = 23 * gameManager.getSquareHeight();
 	}
 }

@@ -6,100 +6,78 @@ import javax.swing.Timer;
 
 public abstract class Character extends JPanel implements Visited, Visitor {
 	protected static final long serialVersionUID = 1L;
-
-	protected double x;
-	protected double y;
+        protected double startingXPosition;
+	protected double startingYPosition;
+	protected gameManager gameManager;
+	protected int characterSpeed;
+	protected StrategyInterface strategy;
+	protected boolean shouldChangeDirection;
+	protected double xPosition;
+	protected double yPosition;
 	protected int deltaX;
 	protected int deltaY;
-	protected Timer timer;
-	protected ImageIcon image;
-	protected double startX;
-	protected double startY;
-	protected gameManager controller;
-	protected int speed;
-	protected StrategyInterface strategy;
-	protected boolean toChangeDirection;
+	protected Timer myTimer;
+	protected ImageIcon characterImage;
+	
 	
 	@Override
 	public void paint(Graphics g){
 		super.paint(g);
-		g.drawImage(image.getImage(), (int)x, (int)y, (int)controller.getSquareWidth(), (int) controller.getSquareHeight(), null);
+		g.drawImage(characterImage.getImage(), (int)xPosition, (int)yPosition, (int)gameManager.getSquareWidth(), (int) gameManager.getSquareHeight(), null);
 	}
 	
 	/**
 	 * This function sets the creature direction to be up 
 	 */	
-	public void setMoveUp(){
-		deltaX=0; deltaY=-1;
+	public void setMovementUp(){
+		deltaX=0;
+                deltaY=-1;
 	}
 	/**
 	 * This function sets the creature direction to be down 
 	 */	
-	public void setMoveDown(){
-		deltaX=0; deltaY=1;
+	public void setMovementDown(){
+		deltaX=0;
+                deltaY=1;
 	}
 	/**
 	 * This function sets the creature direction to be right 
 	 */	
-	public void setMoveRight(){
-		deltaX=1; deltaY=0;
+	public void setMovementRight(){
+		deltaX=1;
+                deltaY=0;
 	}
 	/**
 	 * This function sets the creature direction to be left 
 	 */	
-	public void setMoveLeft(){
-		deltaX=-1; deltaY=0;
+	public void setMovementLeft(){
+		deltaX=-1;
+                deltaY=0;
 	}
 
 	/**
 	 * @return x = x index on the board
 	 */	
-	public double getXIndex(){
-		return this.x;
+	public double getXIndexPosition(){
+		return this.xPosition;
 	}
 	
 	/**
 	 * @return y = y index on the board
 	 */	
-	public double getYIndex(){
-		return this.y;
+	public double getYIndexPosition(){
+		return this.yPosition;
 	}
 	
 	/**
 	 * @param x = x index on the board
 	 */	
-	public void setXindex(double x){
-		this.x=x;
+	public void setXIndexPosition(double x){
+		this.xPosition=x;
 	}
-	
-	/**
-	 * @param y = y index on the board
-	 */	
-	public void setYindex(double y){
-		this.y=y;
-	}
-	
-	/**
-	 * initial the creature direction
-	 */	
-	public void zeroDeltaXY(){
-		this.deltaX=0;
-		this.deltaY=0;
-	}
-	
-	public abstract void move();
-	
-	public void restart() {
-		this.timer.start();
-	}
-	
-	public void stop() {
-		this.timer.stop();
-	}
-	
-	public void replace(){
-		this.x = startX;
-		this.y = startY;
+        	public void replace(){
+		this.xPosition = startingXPosition;
+		this.yPosition = startingYPosition;
 	}
 	
 	public int getDeltaX(){
@@ -110,10 +88,37 @@ public abstract class Character extends JPanel implements Visited, Visitor {
 		return deltaY;
 	}
 	public gameManager getBoard(){
-		return controller;
+		return gameManager;
 	}
 	
 	public boolean eats(Character character){
 		return character.accept(this);
 	}
+	
+	/**
+	 * @param y = y index on the board
+	 */	
+	public void setYIndexPosition(double y){
+		this.yPosition=y;
+	}
+	
+	/**
+	 * initial the creature direction
+	 */	
+	public void resetDeltaXAndY(){
+		this.deltaX=0;
+		this.deltaY=0;
+	}
+	
+	public abstract void move();
+	
+	public void restartTimer() {
+		this.myTimer.start();
+	}
+	
+	public void stopTimer() {
+		this.myTimer.stop();
+	}
+	
+
 }

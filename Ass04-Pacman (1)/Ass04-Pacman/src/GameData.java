@@ -2,45 +2,46 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class GameData {
-	private int lives;
-	private int score;
+	private int currentLives;
+	private int currentScore;
 	private String startTimer;
-	private String endTimer;
-	private String firstDecTimer;
+	private String finalTimer;
+	private String timerFirstDecreasing;
 	
-	public GameData(int lives, int score){
-		this.lives=lives;
-		this.score=score;
+	public GameData(int numOfLives, int startScore){
+		this.currentLives=numOfLives;
+		this.currentScore=startScore;
 		this.startTimer = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
-		this.endTimer="";
-		this.firstDecTimer="";
+		this.finalTimer="";
+		this.timerFirstDecreasing="";
 	}
-	
-	public int getLives(){
-		return lives;
-	}
-	public void decLives(){
-		lives--;
-	}
-	public int getScore(){
-		return score;
-	}
-	public void addScore(int i){
-		score=score+i;
-	}
-	public void setEndTimer(String end){
-		this.endTimer = end;
+        public void setFinalTimer(String finalTimer){
+		this.finalTimer = finalTimer;
 	}
 	public String getStartTimer(){
 		return startTimer;
 	}
-	public String getEndTimer(){
-		return endTimer;
+	public String getFinalTimer(){
+		return finalTimer;
 	}
-	public String getFirstDecTimer(){
-		return firstDecTimer;
+	public String getFirstDecreasingTimer(){
+		return timerFirstDecreasing;
 	}
-	public void setFirstDecTimer(String dec){
-		this.firstDecTimer = dec;
+	public void setFirstDecreasingTimer(String dec){
+		this.timerFirstDecreasing = dec;
 	}
+	
+	public int getCurrentLives(){
+		return currentLives;
+	}
+	public void decrementLives(){
+		currentLives--;
+	}
+	public int getCurrentScore(){
+		return currentScore;
+	}
+	public void addToScore(int scoreToAdd){
+		currentScore=currentScore+scoreToAdd;
+	}
+	
 }

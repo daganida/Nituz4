@@ -1,12 +1,12 @@
 
 public abstract class CellType {
-	protected int type;
+	protected int myType;
 	
 	public CellType(int type){
-		this.type=type;
+		this.myType=type;
 	}
 	
 	public int getCellType(){
-		return type;
+		return myType;
 	}
 }

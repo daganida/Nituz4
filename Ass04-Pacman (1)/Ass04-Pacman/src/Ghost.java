@@ -17,24 +17,24 @@ public abstract class Ghost extends Character{
 			this.deltaX=0;
 			this.deltaY=0;
 			this.gColor = gColor;
-			this.speed = 10;
-			this.startX = startingPointX;
-			this.startY = startingPointY;
-			this.x=startingPointX;
-			this.y=startingPointY;
-			this.controller = controller;
+			this.characterSpeed = 10;
+			this.startingXPosition = startingPointX;
+			this.startingYPosition = startingPointY;
+			this.xPosition=startingPointX;
+			this.yPosition=startingPointY;
+			this.gameManager = controller;
 			this.strategy = algorithm;
-			this.toChangeDirection = true;
+			this.shouldChangeDirection = true;
 			this.path = "Img/g" + gColor + ".png";
-			this.image = new ImageIcon(getClass().getClassLoader().getResource(path));
+			this.characterImage = new ImageIcon(getClass().getClassLoader().getResource(path));
 			this.startRoundTime = System.currentTimeMillis();
-			this.timer=new Timer(speed,new ActionListener() {
+			this.myTimer=new Timer(characterSpeed,new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if (e.getSource()==timer){
-						if(toChangeDirection == true){
+					if (e.getSource()==myTimer){
+						if(shouldChangeDirection == true){
 							nextMove();
-							toChangeDirection = false;
+							shouldChangeDirection = false;
 						}
 						if(isDelayed){
 							if(checkMovementAblillity(delay) == true)
@@ -49,7 +49,7 @@ public abstract class Ghost extends Character{
 			this.setVisible(true);
 			this.setFocusable(true);
 			this.requestFocus(true);
-			timer.start();
+			myTimer.start();
 		}
 		
 		protected abstract void nextMove();
@@ -61,18 +61,18 @@ public abstract class Ghost extends Character{
 		}
 
 		public void move(){				
-				int xCoor = (int)Math.round((x+deltaX)/controller.getSquareWidth());
-				int yCoor = (int)Math.round((y+deltaY)/controller.getSquareHeight());
-				if(controller.getBoard().getCellType(yCoor, xCoor) instanceof WallCell)
-					toChangeDirection=true;
+				int xCoor = (int)Math.round((xPosition+deltaX)/gameManager.getSquareWidth());
+				int yCoor = (int)Math.round((yPosition+deltaY)/gameManager.getSquareHeight());
+				if(gameManager.getBoard().getCellType(yCoor, xCoor) instanceof WallCell)
+					shouldChangeDirection=true;
 				else if(yCoor >= 13 && yCoor <= 15 && xCoor >= 13 && xCoor <= 14){
 					deltaX=0;
 					deltaY=-1;
-					y=y+deltaY;
+					yPosition=yPosition+deltaY;
 				}
 				else{
-					this.x=x+deltaX;
-					this.y=y+deltaY;
+					this.xPosition=xPosition+deltaX;
+					this.yPosition=yPosition+deltaY;
 				}
 		}
 

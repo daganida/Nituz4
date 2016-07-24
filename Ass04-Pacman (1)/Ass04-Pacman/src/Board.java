@@ -106,31 +106,31 @@ public class Board {
 		}
 	}
         public void addToCuurentScore(int scoreToAdd){
-		gameManager.addScore(scoreToAdd);
+		gameManager.addToScore(scoreToAdd);
 	}
 	public void setFinalTimer(String endString){
-		gameManager.setEndTimer(endString);
+		gameManager.setFinalTimer(endString);
 	}
 	public String getStartTimer(){
 		return gameManager.getStartTimer();
 	}
 	public String getFinalTimer(){
-		return gameManager.getEndTimer();
+		return gameManager.getFinalTimer();
 	}
 	public String getFirstDecrementTimer(){
-		return gameManager.getFirstDecTimer();
+		return gameManager.getFirstDecreasingTimer();
 	}
 	public void setFirstDecrementTimer(String dec){
-		gameManager.setFirstDecTimer(dec);
+		gameManager.setFirstDecreasingTimer(dec);
 	}
 	public int getCuurentLives(){
-		return gameManager.getLives();
+		return gameManager.getCurrentLives();
 	}
 	public void decrementLives(){
-		gameManager.decLives();
+		gameManager.decrementLives();
 	}
 	public int getCurrentScore(){
-		return gameManager.getScore();
+		return gameManager.getCurrentScore();
 	}
 	
 }

@@ -8,8 +8,8 @@ public class RandomStrategy implements StrategyInterface{
 		double width = ghost.getBoard().getSquareWidth();
 		double height = ghost.getBoard().getSquareHeight();
                 //ghost cradentials
-		int ghostX = (int)Math.round((ghost.getXIndex())/width);
-		int ghostY = (int)Math.round((ghost.getYIndex())/height);
+		int ghostX = (int)Math.round((ghost.getXIndexPosition())/width);
+		int ghostY = (int)Math.round((ghost.getYIndexPosition())/height);
                 //get all possible directions
                 options = fillAllPossibleOptions(ghostX,ghostY,b);
                 //choose randomaly
@@ -46,10 +46,10 @@ public class RandomStrategy implements StrategyInterface{
     {
         
 		switch(direction){
-			case 1:{character.setMoveLeft();break;}
-			case 2:{character.setMoveRight();break;}
-			case 3:{character.setMoveUp();break;}
-			case 4:{character.setMoveDown();break;}
+			case 1:{character.setMovementLeft();break;}
+			case 2:{character.setMovementRight();break;}
+			case 3:{character.setMovementUp();break;}
+			case 4:{character.setMovementDown();break;}
 		}
     }
 }

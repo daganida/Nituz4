@@ -14,11 +14,11 @@ public class smartStrategy implements StrategyInterface{
 		double width = ghost.getBoard().getSquareWidth();
 		double height = ghost.getBoard().getSquareHeight();
                 //pacman cradentials
-                int pacmanX = (int)Math.round((pacman.getXIndex())/width);
-		int pacmanY = (int)Math.round((pacman.getYIndex())/height);
+                int pacmanX = (int)Math.round((pacman.getXIndexPosition())/width);
+		int pacmanY = (int)Math.round((pacman.getYIndexPosition())/height);
                 //ghost cradentials        
-		int ghostX = (int)Math.round((ghost.getXIndex())/width);
-		int ghostY = (int)Math.round((ghost.getYIndex())/height);
+		int ghostX = (int)Math.round((ghost.getXIndexPosition())/width);
+		int ghostY = (int)Math.round((ghost.getYIndexPosition())/height);
 
                 
                 options = fillAllPossibleOptions(ghostX,ghostY,board);
@@ -92,10 +92,10 @@ public class smartStrategy implements StrategyInterface{
 		Board board = ghost.getBoard().getBoard();
 		double squareWidth = ghost.getBoard().getSquareWidth();
 		double squareHeight = ghost.getBoard().getSquareHeight();
-		int ghostX = (int)Math.round((ghost.getXIndex())/squareWidth);
-		int ghostY = (int)Math.round((ghost.getYIndex())/squareHeight);
-		int pacmanX = (int)Math.round((pacman.getXIndex())/squareWidth);
-		int pacmanY = (int)Math.round((pacman.getYIndex())/squareHeight);
+		int ghostX = (int)Math.round((ghost.getXIndexPosition())/squareWidth);
+		int ghostY = (int)Math.round((ghost.getYIndexPosition())/squareHeight);
+		int pacmanX = (int)Math.round((pacman.getXIndexPosition())/squareWidth);
+		int pacmanY = (int)Math.round((pacman.getYIndexPosition())/squareHeight);
                 return options;
                 
     }
@@ -122,10 +122,10 @@ public class smartStrategy implements StrategyInterface{
     private void moveGhostByDirection(String direction,Character ghost)
     {
         	switch(direction){
-		case "L":{ghost.setMoveLeft();break;}
-		case "R":{ghost.setMoveRight();break;}
-		case "U":{ghost.setMoveUp();break;}
-		case "D":{ghost.setMoveDown();break;}
+		case "L":{ghost.setMovementLeft();break;}
+		case "R":{ghost.setMovementRight();break;}
+		case "U":{ghost.setMovementUp();break;}
+		case "D":{ghost.setMovementDown();break;}
 		}
     }
 }

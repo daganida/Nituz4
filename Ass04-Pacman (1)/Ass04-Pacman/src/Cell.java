@@ -1,22 +1,22 @@
 
 public class Cell {
-	private int x;
-	private int y;
-	private CellType type;
+	private int posX;
+	private int posY;
+	private CellType cellType;
 	
-	public Cell(int x, int y, CellType type){
-		this.x = x;
-		this.y = y;
-		this.type = type;
+	public Cell(int xCord, int yCord, CellType cellType){
+		this.posX = xCord;
+		this.posY = yCord;
+		this.cellType = cellType;
 	}
 	
 	public CellType getCellType(){
-		return type;
+		return cellType;
 	}
 	public int getCellTypeValue(){
-		return type.getCellType();
+		return cellType.getCellType();
 	}
 	public void setCellType(CellType type){
-		this.type = type;
+		this.cellType = type;
 	}
 }
