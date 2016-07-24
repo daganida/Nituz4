@@ -141,7 +141,7 @@ public class gameManager extends JPanel{
 		multiBoard = new JLayeredPane();
 		multiBoard.setPreferredSize(new Dimension(mapHeight, mapWidth));
 		
-		LoadUsers();
+		LoadUsersFromFile();
 		LoadStatistics();
 		setBoardMainScreen();
 
@@ -149,7 +149,7 @@ public class gameManager extends JPanel{
 		multiBoard.setVisible(true);
 		this.add(multiBoard);
 	}
-	private void LoadUsers() {
+	private void LoadUsersFromFile() {
 		try {
                   ReadUsersFromFile();
 		} catch (IOException e) {
@@ -176,19 +176,21 @@ public class gameManager extends JPanel{
     }
 	private void setBoardMainScreen() {
 		multiBoard.removeAll();
-		multiBoard.repaint();
-		//removeComponents(); //board, ghosts & pacman
-		
+		multiBoard.repaint();		
 		JPanel mainScreenBackground = createMainBackground();
 		mainScreenBackground.setBounds(0, 0, mapWidth, mapHeight + bottomPanelHeight);
 		multiBoard.add(mainScreenBackground, new Integer(0));
 		
 		JPanel mainScreenButtons = createMainButtons();
-		mainScreenButtons.setOpaque(false);
-		mainScreenButtons.setBounds(0, 0, mapWidth, mapHeight + bottomPanelHeight);
-		multiBoard.add(mainScreenButtons, new Integer(1));
+		setMainScreenButtons(mainScreenButtons);
 		
 	}
+
+    private void setMainScreenButtons(JPanel mainScreenButtons) {
+        mainScreenButtons.setOpaque(false);
+        mainScreenButtons.setBounds(0, 0, mapWidth, mapHeight + bottomPanelHeight);
+        multiBoard.add(mainScreenButtons, new Integer(1));
+    }
 	/////////////////////////////////JPanels/////////////////////////////////
 	private JPanel CreateRegistrationLPanel(){
             
@@ -199,127 +201,81 @@ public class gameManager extends JPanel{
 		JPanel signPanel = new JPanel();
 		signPanel.setLayout(null);
 		signPanel.setBackground(Color.BLACK);
-		
+                String test = "";           
+                for(int i = 1 ; i<30 ; i++) {                                 
+                }
 		JLabel lblTitle = new JLabel("Sign Up!");
-                lblTitle.setFont(new Font("Arial", Font.BOLD,20));
-                //update labels
-                
-                setLabelProperties(lblTitle,"White",currentWidth / 2 -30, currentHeight / 8 + 100, 230, 40);
-                /*
-		lblTitle.setForeground(Color.WHITE);
-		lblTitle.setBounds(currentWidth / 2 -30, currentHeight / 8 + 100, 230, 40);
-                */
-		
+                setLabelProperties(lblTitle,"White",currentWidth / 2 -30, currentHeight / 8 + 100, 230, 40);	
 		JLabel lblName = new JLabel("Name:");
-                setLabelProperties(lblName,"White",currentWidth / 4, currentHeight / 4 +135, lblWidth, lblHeight);
-                /*
-		lblName.setForeground(Color.WHITE);
-		lblName.setBounds(currentWidth / 4, currentHeight / 4 +135, lblWidth, lblHeight);
-                */
-		
+                setLabelProperties(lblName,"White",currentWidth / 4, currentHeight / 4 +135, lblWidth, lblHeight);		
 		JLabel lblSex = new JLabel("Sex: M/F");
                 setLabelProperties(lblSex,"White",currentWidth / 4, currentHeight / 4 + 160, lblWidth, lblHeight);
-                /*
-
-		lblSex.setForeground(Color.WHITE);
-		lblSex.setBounds(currentWidth / 4, currentHeight / 4 + 160, lblWidth, lblHeight);
-                */
-
-
 		JLabel lblAge = new JLabel("Age:");
                 setLabelProperties(lblAge,"White",currentWidth / 4, currentHeight / 4 + 180, lblWidth, lblHeight);
-                /*
-		lblAge.setForeground(Color.WHITE);
-		lblAge.setBounds(currentWidth / 4, currentHeight / 4 + 180, lblWidth, lblHeight);
-                */
-
-
 		JLabel lblPass = new JLabel("Password:");
                 setLabelProperties(lblPass,"White",currentWidth / 4, currentHeight / 4 + 200, lblWidth, lblHeight);
-                /*
-		lblPass.setForeground(Color.WHITE);
-		lblPass.setBounds(currentWidth / 4, currentHeight / 4 + 200, lblWidth, lblHeight);
-                */
-
 		JTextField txtName = new JTextField();
 		txtName.setBounds(currentWidth / 4 + lblWidth/2 + 30, currentHeight / 4 +140, txtBWidth, lblHeight);
-
 		JTextField txtSex = new JTextField();
 		txtSex.setBounds(currentWidth / 4 + lblWidth/2 +30, currentHeight / 4 + 160, txtBWidth / 7, lblHeight);
-		
-
 		JTextField txtAge = new JTextField();
 		txtAge.setBounds(currentWidth / 4 + lblWidth/2 + 30, currentHeight / 4 + 180, txtBWidth, lblHeight);
-		
-
 		JPasswordField txtPass = new JPasswordField();
 		txtPass.setBounds(currentWidth / 4 + lblWidth/2 +30, currentHeight / 4 + 200, txtBWidth, lblHeight);
-		
-		
 		JButton signUpBtn = new JButton("Sign Up");
 		signUpBtn.setBounds(currentWidth /4, currentHeight/4 + 240, lblWidth, lblHeight);
-		signUpBtn.addActionListener(new ActionListener()
-		{
-		    public void actionPerformed(ActionEvent e)
-		    {
-		    	if(addNewMember(txtName.getText(), txtSex.getText(), txtAge.getText(), String.valueOf(txtPass.getPassword())) == true){
-		    		JOptionPane.showMessageDialog(signPanel, "Registration Succeed!", "Confirm Window",1);
-			        setBoardMainScreen();
-		    	}
-		    	else{
-		    		JOptionPane.showMessageDialog(signPanel, "Wrong details - Check again", "Error Window",0);
-		    	}
-		    }
-		});
-                
-		
+		setSignUpEventListener(signUpBtn, txtName, txtSex, txtAge, txtPass, signPanel);               	
 		JButton btnBack = new JButton("Back");
-                defineBackButtonEvent(btnBack,lblWidth,lblHeight);
-                
-		addControlsToPanel(signPanel, lblTitle, lblName, lblSex, lblAge, lblPass, txtName, txtSex, txtAge, txtPass, signUpBtn, btnBack);
-				
+                defineBackButtonEvent(btnBack,lblWidth,lblHeight);  
+		addControlsToPanel(signPanel, lblTitle, lblName, lblSex, lblAge, lblPass, txtName, txtSex, txtAge, txtPass, signUpBtn, btnBack);			
 		return signPanel;
 	}
 
+    private void setSignUpEventListener(JButton signUpBtn, JTextField txtName, JTextField txtSex, JTextField txtAge, JPasswordField txtPass, JPanel signPanel) {
+        signUpBtn.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if(addNewMember(txtName.getText(), txtSex.getText(), txtAge.getText(), String.valueOf(txtPass.getPassword())) == true){
+                    JOptionPane.showMessageDialog(signPanel, "Registration Succeed!", "Confirm Window",1);
+                    setBoardMainScreen();
+                }
+                else{
+                    JOptionPane.showMessageDialog(signPanel, "Wrong details - Check again", "Error Window",0);
+                }
+            }
+        });
+    }
+
     private void addControlsToPanel(JPanel signPanel, JLabel lblTitle, JLabel lblName, JLabel lblSex, JLabel lblAge, JLabel lblPass, JTextField txtName, JTextField txtSex, JTextField txtAge, JPasswordField txtPass, JButton signUpBtn, JButton btnBack) {
         signPanel.add(lblTitle);
-        signPanel.add(lblName);
-        signPanel.add(lblSex);
-        signPanel.add(lblAge);
-        signPanel.add(lblPass);
         signPanel.add(txtName);
         signPanel.add(txtSex);
         signPanel.add(txtAge);
         signPanel.add(txtPass);
         signPanel.add(signUpBtn);
         signPanel.add(btnBack);
+        signPanel.add(lblName);
+        signPanel.add(lblSex);
+        signPanel.add(lblAge);
+        signPanel.add(lblPass);
+  
     }
 	private JPanel createNewGamePanel(){
 		int labelWidth = 100;
 		int labelHeight = 20;
 		playerMode = 0;
-		gameMode = 0;
-		
+		gameMode = 0; 	
 		JPanel gamePanel = new JPanel();
 		gamePanel.setLayout(null);
-		gamePanel.setBackground(Color.black);
-		
+		gamePanel.setBackground(Color.black);	
 		JLabel lblTitle = new JLabel("Configurations");
                 lblTitle.setFont(new Font("Arial", Font.BOLD,15));
-                setLabelProperties(lblTitle,"White",currentWidth / 2 - 40, currentHeight / 8, 200, 40);
-                
+                setLabelProperties(lblTitle,"White",currentWidth / 2 - 40, currentHeight / 8, 200, 40);               
 		JButton btnRealPlayer = new JButton("Single Player");
                 setBtnProperties(btnRealPlayer,frameWidth /4 , frameHeight/2 - 100, labelWidth +10, labelHeight);
-                /*
-		realPlayerBtn.setBounds(frameWidth /4 , frameHeight/2 - 100, labelWidth +10, labelHeight);
-                */
-		
 		JButton btnComputer = new JButton("Computer");
-                setBtnProperties(btnComputer,frameWidth /4 + labelWidth + 20, frameHeight/2 - 100, labelWidth +10, labelHeight);
-                /*
-		demoPlayerBtn.setBounds(frameWidth /4 + labelWidth + 20, frameHeight/2 - 100, labelWidth +10, labelHeight);
-                */
-		
+                setBtnProperties(btnComputer,frameWidth /4 + labelWidth + 20, frameHeight/2 - 100, labelWidth +10, labelHeight);		
 		btnRealPlayer.addActionListener(new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
@@ -328,8 +284,7 @@ public class gameManager extends JPanel{
 		    	btnRealPlayer.setBorder(UIManager.getBorder("Button.border"));
 		    	playerMode = 1;
 		    }
-		});
-		
+		});	
 		btnComputer.addActionListener(new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
@@ -339,21 +294,12 @@ public class gameManager extends JPanel{
 		    	playerMode=2;
 		    }
 		});
-		// Easy - Hard
-           
 		JButton easyLevelBtn = new JButton("Easy");
                 easyLevelBtn.setContentAreaFilled(true);
                 setBtnProperties(easyLevelBtn,frameWidth /4 , frameHeight/2 - 60, labelWidth +10, labelHeight);
-                /*
-		easyLevelBtn.setBounds(frameWidth /4 , frameHeight/2 - 60, labelWidth +10, labelHeight);
-                */
-		
 		JButton hardBtn = new JButton("Hard");
                                 hardBtn.setContentAreaFilled(true);
                                 setBtnProperties(hardBtn,frameWidth /4 + labelWidth + 20, frameHeight/2 - 60 , labelWidth +10, labelHeight);
-                                /*
-		hardBtn.setBounds(frameWidth /4 + labelWidth + 20, frameHeight/2 - 60 , labelWidth +10, labelHeight);
-                                */
 
 		
 		easyLevelBtn.addActionListener(new ActionListener()
@@ -374,32 +320,25 @@ public class gameManager extends JPanel{
 		    	hardBtn.setBorder(UIManager.getBorder("Button.border"));
 		    	gameMode=2;
 		    }
-		});
-		
+		});		
 		JLabel lblTimer = new JLabel("Ghost Delay(0-10):");
 		lblTimer.setForeground(Color.WHITE);
 		lblTimer.setBounds(frameWidth /4, frameHeight/2 - 20, labelWidth*2 + 30, labelHeight);
                 JTextField txtBTimer = new JTextField();
-		txtBTimer.setBounds(frameWidth / 4 + labelWidth + 70,frameHeight/2 - 20, 50, labelHeight);
-		
+		txtBTimer.setBounds(frameWidth / 4 + labelWidth + 70,frameHeight/2 - 20, 50, labelHeight);		
 		JButton btnStart = new JButton("Start");
                 setBtnProperties(btnStart,frameWidth /4, frameHeight/2+40 , labelWidth, labelHeight);
-                /*
-		btnStart.setBounds(frameWidth /4, frameHeight/2+40 , labelWidth, labelHeight);
-                */
 		btnStart.addActionListener(new ActionListener()
 		{
 		    public void actionPerformed(ActionEvent e)
 		    {
-		    	if(checkConfigDetails(gamePanel) == true){
+		    	if(checkConfigurationsDetails(gamePanel) == true){
     				setGameScreen(playerMode, gameMode, Integer.parseInt(txtBTimer.getText()));
 		    	}
 		    }
-		});
-		
+		});		
 		JButton backBtn = new JButton("Back");
-                setBtnProperties(backBtn,frameWidth /4 + 110, frameHeight/2+40, labelWidth, labelHeight);
-                
+                setBtnProperties(backBtn,frameWidth /4 + 110, frameHeight/2+40, labelWidth, labelHeight);               
 		backBtn.setBounds(frameWidth /4 + 110, frameHeight/2+40, labelWidth, labelHeight);
 		backBtn.addActionListener(new ActionListener()
 		{
@@ -408,23 +347,20 @@ public class gameManager extends JPanel{
 		        setBoardMainScreen();
 		    }
 		});
-		
-		gamePanel.add(lblTitle);
-                gamePanel.add(txtBTimer);
-		gamePanel.add(btnRealPlayer);
-		gamePanel.add(btnComputer);
+                gamePanel.add(btnComputer);
 		gamePanel.add(easyLevelBtn);
 		gamePanel.add(hardBtn);
 		gamePanel.add(lblTimer);
-                /*
-		newGamePanel.add(ghostTimerSlider);
-*/
 		gamePanel.add(btnStart);
 		gamePanel.add(backBtn);
+		gamePanel.add(lblTitle);
+                gamePanel.add(txtBTimer);
+		gamePanel.add(btnRealPlayer);
+		
 		
 		return gamePanel;
 	}
-	private boolean checkConfigDetails(JPanel parent){
+	private boolean checkConfigurationsDetails(JPanel panel){
 		if(playerMode!= 0 && gameMode != 0){
     		if(playerMode == 1){ //Real Player
 				String username = JOptionPane.showInputDialog(null, "Enter Username:", "Username", 1);
@@ -434,7 +370,7 @@ public class gameManager extends JPanel{
     				return true;
     			}
     			else
-    				JOptionPane.showMessageDialog(parent, "Invalid Username / Password, Please Try Again", "Error Window",0);
+    				JOptionPane.showMessageDialog(panel, "Invalid Username / Password, Please Try Again", "Error Window",0);
     		}	
     		else{ //Demo Player
     			currentUser = "@demo";
@@ -444,7 +380,7 @@ public class gameManager extends JPanel{
     		}
     	}
     	else{
-    		JOptionPane.showMessageDialog(parent, "Make Sure You Chose Player & Game Mode", "Error Window",0);
+    		JOptionPane.showMessageDialog(panel, "Make Sure You Chose Player & Game Mode", "Error Window",0);
     	}
 		return false;
 	}
